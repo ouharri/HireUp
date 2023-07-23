@@ -1,0 +1,51 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body,
+html {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.containnerApp{
+	padding: 0 !important;
+	margin: 0 !important;
+}
+
+::selection,:host {
+    padding: 0 !important;
+	margin: 0 !important;
+}
+
+/* Supprimer tout padding à l'intérieur du composant */
+:host {
+    padding: 0;
+}
+
+/* Supprimer tout margin à l'intérieur du composant */
+:host * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.slds-template_default{
+	padding: 0 !important;
+	margin: 0 !important;
+}
+
+.app {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  font-family: "Poppins", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #000;
+}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Description__c</fullName>
+    <description>This quiz consists of a series of questions designed to test your knowledge on [subject matter]. To begin, click the &quot;Start Quiz&quot; button below. You will have a limited amount of time to complete the quiz, so it is important to read each question carefully and answer to the best of your ability. You can only submit your answers once, so be sure to review your responses before submitting. Good luck!</description>
+    <externalId>false</externalId>
+    <label>Description</label>
+    <length>32768</length>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

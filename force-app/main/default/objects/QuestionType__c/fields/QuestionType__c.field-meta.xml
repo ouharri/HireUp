@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>QuestionType__c</fullName>
+    <externalId>false</externalId>
+    <label>QuestionType</label>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>multiple choice</fullName>
+                <default>false</default>
+                <label>multiple choice</label>
+            </value>
+            <value>
+                <fullName>true/false</fullName>
+                <default>false</default>
+                <label>true/false</label>
+            </value>
+            <value>
+                <fullName>short answer</fullName>
+                <default>false</default>
+                <label>short answer</label>
+            </value>
+            <value>
+                <fullName>Curseur</fullName>
+                <default>false</default>
+                <label>Curseur</label>
+            </value>
+            <value>
+                <fullName>Puzzle</fullName>
+                <default>false</default>
+                <label>Puzzle</label>
+            </value>
+            <value>
+                <fullName>Sondage</fullName>
+                <default>false</default>
+                <label>Sondage</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
