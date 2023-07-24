@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SupportedLanguages</fullName>
+    <inlineHelpText>The languages to make available to buyers. Language options come from Translation Workbench.</inlineHelpText>
+</CustomField>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>QualifierCriteria</fullName>
+    <inlineHelpText>Define whether a cart must meet the criteria for any qualifier or all qualifiers</inlineHelpText>
+    <trackHistory>false</trackHistory>
+</CustomField>

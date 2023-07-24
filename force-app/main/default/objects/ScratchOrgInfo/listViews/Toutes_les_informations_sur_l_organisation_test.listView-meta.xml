@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Toutes_les_informations_sur_l_organisation_test</fullName>
+    <filterScope>Everything</filterScope>
+    <label>Toutes les informations sur l&apos;organisation test</label>
+</ListView>

@@ -1,3 +1,32 @@
 <template>
-
+  <div class="question_container">
+    <div class="question-contents">
+      <p class="question-no">
+        Question 1 of 10
+      </p>
+      <h3 class={timerClass}>
+        {countDown}
+      </h3>
+      <p class="question">
+        questions[currentQuestion - 1].question
+      </p>
+      <div class="options-container">
+        <!-- v-for="(item, index) in options" -->
+        <!-- :key="index" -->
+        <!-- onclick="correctAnswer(item.isCorrect, item.answer)" -->
+        <button type="button">
+          item.answer
+        </button>
+      </div>
+      <div class="btn">
+        <!-- v-show="currentQuestion < questions.length" -->
+        <button class="next-btn" onclick={handleNextQuestion}>
+          Next
+        </button>
+        <button class="submit-btn">
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
 </template>

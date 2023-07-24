@@ -15,7 +15,7 @@ export default class StartQuizComp extends LightningElement {
 
     startQuize() {
         this.dispatchEvent(
-            new CustomEvent('startquize')
+            new CustomEvent('startquiz')
         );
     }
 }

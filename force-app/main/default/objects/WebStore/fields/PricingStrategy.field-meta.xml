@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PricingStrategy</fullName>
+    <inlineHelpText>Select the price to show to buyers: either the best price or the prices from the highest priority price book.</inlineHelpText>
+</CustomField>

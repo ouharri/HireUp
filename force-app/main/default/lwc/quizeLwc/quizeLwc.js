@@ -1,24 +1,51 @@
 import { LightningElement, wire, track } from 'lwc';
 import { CurrentPageReference } from 'lightning/navigation';
+import validateToken from '@salesforce/apex/TokenManager.validateToken'; // Importez la méthode Apex
 
 export default class QuizeLwc extends LightningElement {
 
-    token = null;
-    @track isStart = false;
-
+    @track isQuizStarted = false;
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
         if (currentPageReference) {
-            this.token = currentPageReference.state?.token;
+            const token = currentPageReference.state?.token;
+            this.validateToken(token);
+        }
+    };
+
+    async validateToken(token) {
+        if (token) {
+            await validateToken({ encryptedToken: token })
+                .then(result => {
+                    if (result) {
+                        this.handleValidToken();
+                    } else {
+                        this.handleInvalidToken();
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la validation du token :', error);
+                });
+        } else {
+            this.handleNoToken();
         }
     }
 
-    connectedCallback() {
-        console.log(this.token);
+    startQuiz() {
+        this.isQuizStarted = true;
     }
 
-    startQuize() {
-        this.isStart = true;
+    handleValidToken() {
+        console.log('Token valide !');
     }
+
+    handleInvalidToken() {
+        console.error('Token invalide ou incomplet !');
+    }
+
+    handleNoToken() {
+        console.error('Token non trouvé dans l\'URL !');
+    }
+
 
 }
