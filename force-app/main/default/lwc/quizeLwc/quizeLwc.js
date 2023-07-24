@@ -20,7 +20,6 @@ export default class QuizeLwc extends LightningElement {
         Promise.all([
             loadStyle(this, flowbitecss),
             loadScript(this, flowbitejs),
-            loadScript(this, sweetalert),
         ])
             .then(() => {
             })
