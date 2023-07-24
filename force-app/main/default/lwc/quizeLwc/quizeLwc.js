@@ -1,9 +1,18 @@
-import { LightningElement } from 'lwc';
+import { LightningElement, wire } from 'lwc';
+import { CurrentPageReference } from 'lightning/navigation';
+
 export default class QuizeLwc extends LightningElement {
+
+    token = null;
+
+    @wire(CurrentPageReference)
+    getStateParameters(currentPageReference) {
+       if (currentPageReference) {
+          this.token = currentPageReference.state?.token;
+       }
+    }
+
     connectedCallback() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('token');
-        console.log('token', token);
-        // Faites quelque chose avec le token ici
+        console.log(this.token);
     }
 }
