@@ -12,4 +12,10 @@ export default class StartQuizComp extends LightningElement {
         this.imageLink = staticResourceName;
         this.imageBgLink = `background-image: url('${quizePatternImage}')`;
     }
+
+    startQuize() {
+        this.dispatchEvent(
+            new CustomEvent('startquize')
+        );
+    }
 }
