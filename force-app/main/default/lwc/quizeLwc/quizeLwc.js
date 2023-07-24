@@ -3,6 +3,7 @@ import { CurrentPageReference } from 'lightning/navigation';
 import flowbitejs from '@salesforce/resourceUrl/flowbitejs';
 import flowbitecss from '@salesforce/resourceUrl/flowbitecss';
 import validateToken from '@salesforce/apex/TokenManager.validateToken'; // Importez la méthode Apex
+import { loadStyle, loadScript } from 'lightning/platformResourceLoader';
 
 export default class QuizeLwc extends LightningElement {
 
