@@ -1,7 +1,10 @@
 import { LightningElement, track } from 'lwc';
+import quizePatternImage from '@salesforce/resourceUrl/quizePatternImage';
+
 
 export default class MultipleChoiceComp extends LightningElement {
     @track countDown = 30;
+    @track imageBgLink;
     timer = null;
 
     get timerClass() {
@@ -21,6 +24,11 @@ export default class MultipleChoiceComp extends LightningElement {
     }
 
     connectedCallback() {
+        this.imageBgLink = `background-image: linear-gradient(
+            to left top,
+            rgb(255, 255, 255, 0.7),
+            rgb(252, 252, 252, 0.7)
+          ),url('${quizePatternImage}')`;
         this.countDownTimer();
     }
 }

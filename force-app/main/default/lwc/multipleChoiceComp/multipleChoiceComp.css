@@ -1,80 +1,3 @@
-.wrapper {
-	height: 100%;
-	width: 100%;
-	overflow: hidden;
-  }
-  /* landing page stles */
-  .landingPage {
-	background-image: url(./img/pattern.jpg);
-	background-size: cover;
-	background-repeat: no-repeat;
-	background-position: center;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 100vh;
-  }
-  
-  .landingPage-contents {
-	margin: 0 auto;
-	width: 90%;
-	max-width: 1200px;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	border-radius: 20px;
-	background-color: #f5f5f5;
-	box-shadow: 10px 10px 42px 0px rgba(0, 0, 0, 0.3);
-	padding: 100px 50px;
-  }
-  
-  .landingPage-img {
-	width: 47%;
-  }
-  .landingPage-img img {
-	max-width: 100%;
-	width: 100%;
-	height: 350px;
-	object-fit: cover;
-	object-position: center;
-  }
-  
-  .landingPage-text {
-	width: 48%;
-	text-align: center;
-  }
-  
-  .landingPage-text h1 {
-	font-size: 40px;
-	font-weight: 900;
-	margin-bottom: 10px;
-  }
-  
-  .landingPage-text p {
-	text-align: left;
-	font-size: 17px;
-	line-height: 1.8;
-	margin-bottom: 20px;
-  }
-  .landingPage-text button {
-	background-color: #4aaaac;
-	border: none;
-	outline: none;
-	padding: 12px;
-	width: 150px;
-	color: #fff;
-	font-weight: 600;
-	font-size: 17px;
-	border-radius: 5px;
-	cursor: pointer;
-	text-align: center;
-	transition: all 0.7s ease 0s;
-  }
-  
-  .landingPage-text button:hover {
-	background-color: #6c757d;
-  }
-  
   /* quiz question section styles  */
   .question-container {
 	margin: 0 auto;
@@ -88,12 +11,6 @@
 	position: relative;
   }
   .question-contents {
-	background-image: linear-gradient(
-		to left top,
-		rgb(255, 255, 255, 0.7),
-		rgb(252, 252, 252, 0.7)
-	  ),
-	  url(./img/pattern.jpg);
 	background-size: cover;
 	background-repeat: no-repeat;
 	background-position: center;

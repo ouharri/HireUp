@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StaticResource xmlns="http://soap.sforce.com/2006/04/metadata">
+    <cacheControl>Public</cacheControl>
+    <contentType>text/javascript</contentType>
+    <description>Flowbite combines &quot;Flow,&quot; a visual development tool, with &quot;Tailwind CSS,&quot; a customizable CSS framework, allowing designers and developers to create interfaces with ease.</description>
+</StaticResource>

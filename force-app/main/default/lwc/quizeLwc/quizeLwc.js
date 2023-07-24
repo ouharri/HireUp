@@ -1,5 +1,7 @@
 import { LightningElement, wire, track } from 'lwc';
 import { CurrentPageReference } from 'lightning/navigation';
+import flowbitejs from '@salesforce/resourceUrl/flowbitejs';
+import flowbitecss from '@salesforce/resourceUrl/flowbitecss';
 import validateToken from '@salesforce/apex/TokenManager.validateToken'; // Importez la méthode Apex
 
 export default class QuizeLwc extends LightningElement {
@@ -12,6 +14,16 @@ export default class QuizeLwc extends LightningElement {
             this.validateToken(token);
         }
     };
+
+    renderedCallback() {
+        Promise.all([
+            loadStyle(this, flowbitecss),
+            loadScript(this, flowbitejs),
+            loadScript(this, sweetalert),
+        ])
+            .then(() => {
+            })
+    }
 
     async validateToken(token) {
         if (token) {
