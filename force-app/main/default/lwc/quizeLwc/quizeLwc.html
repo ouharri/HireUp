@@ -5,6 +5,72 @@
       if:false={isQuizStarted}
     ></c-start-quiz-comp>
 
-    <c-multiple-choice-comp if:true={isQuizStarted}></c-multiple-choice-comp>
+    <div class="question_container" if:true={isQuizStarted}>
+      <div class="question-contents" style={imageBgLink}>
+        <div
+          class="grid grid-rows-6 grid-cols-1 text-gray-600 mx-auto w-11/12 md:w-8/12 lg:w-7/12 overflow-y-hidden custom-height"
+        >
+          <div class="row-span-2">
+            <div
+              class="min-h-full items-center justify-between py-4 rounded-lg flex flex-col items-center"
+            >
+              <!-- v-for="(item, index) in store.data.results"
+      :class="{
+        'bg-green-300': item.guessedRight,
+        'bg-red-300': item.guessedRight == false,
+        'bg-gray-200': !item.guessedRight,
+      }" -->
+              <div class="flex my-4 gap-2 mb-[2rem !important]">
+                <div
+                  class="w-2 h-2 rounded text-white mx-1 text-center text-xs flex items-center justify-center bg-gray-200"
+                ></div>
+                <div
+                  class="w-2 h-2 rounded text-white mx-1 text-center text-xs flex items-center justify-center bg-gray-200"
+                ></div>
+                <div
+                  class="w-2 h-2 rounded text-white mx-1 text-center text-xs flex items-center justify-center bg-gray-200"
+                ></div>
+                <div
+                  class="w-2 h-2 rounded text-white mx-1 text-center text-xs flex items-center justify-center bg-gray-200"
+                ></div>
+                <div
+                  class="w-2 h-2 rounded text-white mx-1 text-center text-xs flex items-center justify-center bg-gray-200"
+                ></div>
+                <div
+                  class="w-2 h-2 rounded text-white mx-1 text-center text-xs flex items-center justify-center bg-gray-200"
+                ></div>
+                <div
+                  class="w-2 h-2 rounded text-white mx-1 text-center text-xs flex items-center justify-center bg-gray-200"
+                ></div>
+                <div
+                  class="w-2 h-2 rounded text-white mx-1 text-center text-xs flex items-center justify-center bg-gray-200"
+                ></div>
+                <div
+                  class="w-2 h-2 rounded text-white mx-1 text-center text-xs flex items-center justify-center bg-gray-200"
+                ></div>
+                <div
+                  class="w-2 h-2 rounded text-white mx-1 text-center text-xs flex items-center justify-center bg-gray-200"
+                ></div>
+                <div
+                  class="w-2 h-2 rounded text-white mx-1 text-center text-xs flex items-center justify-center bg-gray-200"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="question-no">
+          Question 1 of 10
+        </p>
+        <h3 class={timerClass}>
+          {countDown}
+        </h3>
+        <p class="question">
+          questions[currentQuestion - 1].question
+        </p>
+
+        <c-multiple-choice-comp> </c-multiple-choice-comp>
+      </div>
+    </div>
   </div>
 </template>

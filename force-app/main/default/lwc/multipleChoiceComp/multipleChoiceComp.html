@@ -1,32 +1,48 @@
 <template>
-  <div class="question_container">
-    <div class="question-contents" style={imageBgLink}>
-      <p class="question-no">
-        Question 1 of 10
-      </p>
-      <h3 class={timerClass}>
-        {countDown}
-      </h3>
-      <p class="question">
-        questions[currentQuestion - 1].question
-      </p>
-      <div class="options-container">
-        <!-- v-for="(item, index) in options" -->
-        <!-- :key="index" -->
-        <!-- onclick="correctAnswer(item.isCorrect, item.answer)" -->
-        <button type="button">
-          item.answer
-        </button>
+
+      <div class="row-span-3">
+        <div class="min-h-full flex flex-col justify-center">
+          <div
+            class="options-container grid grid-cols-1 gap-3 md:gap-6 md:grid-cols-2"
+          >
+            <!-- v-for="(item, index) in options" -->
+            <!-- :key="index" -->
+            <!-- onclick="correctAnswer(item.isCorrect, item.answer)" -->
+            <button type="button">
+              item.answer
+            </button>
+            <!-- :class="{
+          'bg-red-200': store.showAnswer && isInvalidAnswer,
+          'bg-green-200': store.showAnswer && isValidAnswer,
+          'hover:bg-gray-300': !store.showAnswer,
+        }" -->
+            <button
+              class="w-full bg-gray-200 rounded-lg p-4 transition md:text-lg md:p-6 hover:bg-gray-300"
+            >
+              HELLO
+            </button>
+            <button
+              class="w-full bg-gray-200 rounded-lg p-4 transition md:text-lg md:p-6 hover:bg-gray-300"
+            >
+              HELLO
+            </button>
+            <button
+              class="w-full bg-gray-200 rounded-lg p-4 transition md:text-lg md:p-6 hover:bg-gray-300"
+            >
+              HELLO
+            </button>
+          </div>
+        </div>
       </div>
-      <div class="btn">
+
+      <!-- <div class="btn"> -->
         <!-- v-show="currentQuestion < questions.length" -->
-        <button class="next-btn" onclick={handleNextQuestion}>
+        <!-- <button class="next-btn" onclick={handleNextQuestion}>
           Next
         </button>
         <button class="submit-btn">
           Submit
         </button>
-      </div>
-    </div>
-  </div>
+      </div> -->
+    
 </template>
