@@ -130,6 +130,7 @@ html {
     }
     
     .count-down {
+    opacity: .7;
     font-size: 32px;
     font-weight: 600;
     border: 3px solid #333;
@@ -143,6 +144,7 @@ html {
     }
     
     .warning {
+    opacity: .7;
     font-size: 32px;
     font-weight: 600;
     border: 3px solid #f00909;

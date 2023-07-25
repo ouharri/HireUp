@@ -18,7 +18,7 @@ global without sharing class TokenManager {
         return encodedId;
     }
 
-    global static Map<String, Id> getIdsFromToken(String encryptedToken) {
+    public static Map<String, Id> getIdsFromToken(String encryptedToken) {
         Map<String, Id> idsMap = new Map<String, Id>();
 
         try {
@@ -43,7 +43,7 @@ global without sharing class TokenManager {
     }
 
     @AuraEnabled(cacheable=true)
-    global static Boolean validateToken(String encryptedToken) {
+    public static Boolean validateToken(String encryptedToken) {
         Map<String, Id> idsMap = getIdsFromToken(encryptedToken);
 
         if (!idsMap.isEmpty() && idsMap.containsKey('LeadId') && idsMap.containsKey('QuizId')) {
@@ -56,9 +56,9 @@ global without sharing class TokenManager {
 
             try {
                 List<Lead> leadList = [SELECT Id FROM Lead WHERE Id = :leadId LIMIT 1];
-                List<Quize__c> quizList = [SELECT Id FROM Quize__c WHERE Id = :quizId LIMIT 1];
+                List<Quiz__c> quizList = [SELECT Id, IsActive__c FROM Quiz__c WHERE Id = :quizId LIMIT 1];
 
-                if (leadList.size() == 1 && quizList.size() == 1) {
+                if (leadList.size() == 1 && quizList.size() == 1 && quizList[0].IsActive__c) {
                     return true;
                 }
             } catch (Exception e) {
