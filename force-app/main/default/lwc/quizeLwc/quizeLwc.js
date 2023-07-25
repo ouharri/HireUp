@@ -5,15 +5,16 @@ import flowbitecss from '@salesforce/resourceUrl/flowbitecss';
 import validateToken from '@salesforce/apex/TokenManager.validateToken';
 import getIdsFromToken from '@salesforce/apex/TokenManager.getIdsFromToken';
 import { loadStyle, loadScript } from 'lightning/platformResourceLoader';
-import getQuizzesWithQuestionsAndOptions from '@salesforce/apex/QuizController.getQuizzesWithQuestionsAndOptions'; import quizePatternImage from '@salesforce/resourceUrl/quizePatternImage';
+import getQuizzesWithQuestionsAndOptions from '@salesforce/apex/QuizController.getQuizzesWithQuestionsAndOptions';
+import quizePatternImage from '@salesforce/resourceUrl/quizePatternImage';
 
 export default class QuizeLwc extends LightningElement {
-
     @track isQuizStarted = false;
     @track countDown = 30;
     @track imageBgLink;
 
     @api quiz;
+    @api questions;
 
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
@@ -21,7 +22,7 @@ export default class QuizeLwc extends LightningElement {
             this.token = currentPageReference.state?.token;
             this.validateToken(currentPageReference.state?.token);
         }
-    };
+    }
 
     token = null;
     timer = null;
@@ -38,37 +39,40 @@ export default class QuizeLwc extends LightningElement {
             loadScript(this, flowbitejs),
         ])
             .then(() => {
+                // Code à exécuter après le chargement des ressources
             })
+            .catch(error => {
+                console.error('Erreur lors du chargement des ressources :', error);
+            });
     }
 
     async validateToken(token) {
         if (token) {
-            await validateToken({ encryptedToken: token })
-                .then((result) => {
-                    if (result) {
-                        this.handleValidToken();
-                    } else {
-                        this.handleInvalidToken(token);
-                    }
-                })
-                .catch(error => {
-                    console.error('Erreur lors de la validation du token :', error);
-                });
+            try {
+                const result = await validateToken({ encryptedToken: token });
+                if (result) {
+                    this.handleValidToken();
+                } else {
+                    this.handleInvalidToken(token);
+                }
+            } catch (error) {
+                console.error('Erreur lors de la validation du token :', error);
+            }
         } else {
             this.handleNoToken();
         }
     }
 
     async handleValidToken() {
-        console.log('Token valide ! ');
-        await getIdsFromToken({ encryptedToken: this.token })
-            .then(result => {
-                this.quizId = result.QuizId;
-                this.LeadId = result.LeadId;
-            })
-            .catch(error => {
-                console.error('Erreur lors de la récupération des IDs :', error);
-            });
+        console.log('Token valide !');
+        try {
+            const result = await getIdsFromToken({ encryptedToken: this.token });
+            this.quizId = result.QuizId;
+            this.LeadId = result.LeadId;
+            await this.getQuizzes();
+        } catch (error) {
+            console.error('Erreur lors de la récupération des IDs :', error);
+        }
     }
 
     handleInvalidToken() {
@@ -97,14 +101,15 @@ export default class QuizeLwc extends LightningElement {
     }
 
     async getQuizzes() {
-        await getQuizzesWithQuestionsAndOptions({ quizId: this.quizId })
-            .then(result => {
-                this.quizzes = result;
-                console.log('Quizzes : ', this.quizzes);
-            })
-            .catch(error => {
-                console.error('Erreur lors de la récupération des quizzes :', error);
-            });
+        try {
+            const result = await getQuizzesWithQuestionsAndOptions({ quizId: this.quizId });
+            this.questions = result.questions;
+            this.quiz = result.quiz;
+            console.log('questions : ', this.questions);
+            console.log('Quiz : ', this.quiz);
+        } catch (error) {
+            console.error('Erreur lors de la récupération des quizzes :', error);
+        }
     }
 
     connectedCallback() {
@@ -114,5 +119,4 @@ export default class QuizeLwc extends LightningElement {
             rgb(252, 252, 252, 0.7)
           ),url('${quizePatternImage}')`;
     }
-
 }
