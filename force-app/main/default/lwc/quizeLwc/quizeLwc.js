@@ -1,4 +1,4 @@
-import { LightningElement, wire, track, api } from 'lwc';
+import { LightningElement, wire, track } from 'lwc';
 import { CurrentPageReference } from 'lightning/navigation';
 import flowbitejs from '@salesforce/resourceUrl/flowbitejs';
 import flowbitecss from '@salesforce/resourceUrl/flowbitecss';
@@ -13,8 +13,8 @@ export default class QuizeLwc extends LightningElement {
     @track countDown = 30;
     @track imageBgLink;
 
-    @api quiz;
-    @api questions;
+    questions;
+    quiz = { 'Name': '', 'Description__c': '', 'Duration__c': '' };
 
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
@@ -67,9 +67,13 @@ export default class QuizeLwc extends LightningElement {
         console.log('Token valide !');
         try {
             const result = await getIdsFromToken({ encryptedToken: this.token });
-            this.quizId = result.QuizId;
-            this.LeadId = result.LeadId;
-            await this.getQuizzes();
+            if (result && result.QuizId && result.LeadId) {
+                this.quizId = result.QuizId;
+                this.LeadId = result.LeadId;
+                await this.getQuizzes();
+            } else {
+                console.error('Invalid data retrieved from the token.');
+            }
         } catch (error) {
             console.error('Erreur lors de la récupération des IDs :', error);
         }
@@ -90,9 +94,18 @@ export default class QuizeLwc extends LightningElement {
                 this.countDownTimer();
             }, 1000);
         } else if (this.countDown === 0) {
-            // Mettre ici le code à exécuter lorsque le compte à rebours atteint zéro
-            // Par exemple, appeler une fonction pour afficher le résultat ou passer à la question suivante
+            // Countdown reached zero, handle the end of the quiz or move to the next question.
+            // For example:
+            this.handleQuizEnd();
         }
+    }
+
+    handleQuizEnd() {
+        // Code to handle the end of the quiz, show results, etc.
+        // For example, clear the timer:
+        clearTimeout(this.timer);
+        this.countDownTimer();
+        this.countDown = 30;
     }
 
     startQuiz() {
@@ -102,11 +115,18 @@ export default class QuizeLwc extends LightningElement {
 
     async getQuizzes() {
         try {
+            console.log('quizId : ', this.quizId);
+            console.log('LeadId : ', this.LeadId);
             const result = await getQuizzesWithQuestionsAndOptions({ quizId: this.quizId });
-            this.questions = result.questions;
-            this.quiz = result.quiz;
-            console.log('questions : ', this.questions);
-            console.log('Quiz : ', this.quiz);
+            console.log('result : ', result);
+            if (result && result.quiz) {
+                this.questions = result.questions;
+                this.quiz = result.quiz;
+                console.log('questions : ', this.questions);
+                console.log('Quiz : ', this.quiz);
+            } else {
+                console.error('No quiz data found for the given quizId.');
+            }
         } catch (error) {
             console.error('Erreur lors de la récupération des quizzes :', error);
         }

@@ -1,7 +1,7 @@
 global without sharing class TokenManager {
     private static final String ENCRYPTION_KEY = '00D8e000000TGLFEA420230724144223';
 
-    public static String generateToken(Id leadId, Id quizId) {
+    global static String generateToken(Id leadId, Id quizId) {
         if (quizId == null || leadId == null) {
             return null;
         }
@@ -18,7 +18,8 @@ global without sharing class TokenManager {
         return encodedId;
     }
 
-    public static Map<String, Id> getIdsFromToken(String encryptedToken) {
+    @AuraEnabled(cacheable=true)
+    global static Map<String, Id> getIdsFromToken(String encryptedToken) {
         Map<String, Id> idsMap = new Map<String, Id>();
 
         try {
@@ -43,7 +44,7 @@ global without sharing class TokenManager {
     }
 
     @AuraEnabled(cacheable=true)
-    public static Boolean validateToken(String encryptedToken) {
+    global static Boolean validateToken(String encryptedToken) {
         Map<String, Id> idsMap = getIdsFromToken(encryptedToken);
 
         if (!idsMap.isEmpty() && idsMap.containsKey('LeadId') && idsMap.containsKey('QuizId')) {
