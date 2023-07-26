@@ -24,36 +24,9 @@
               <div class="flex my-4 gap-2 mb-[2rem !important]">
                 <div
                   class="w-2 h-2 rounded text-white mx-1 text-center text-xs flex items-center justify-center bg-gray-200"
-                ></div>
-                <div
-                  class="w-2 h-2 rounded text-white mx-1 text-center text-xs flex items-center justify-center bg-gray-200"
-                ></div>
-                <div
-                  class="w-2 h-2 rounded text-white mx-1 text-center text-xs flex items-center justify-center bg-gray-200"
-                ></div>
-                <div
-                  class="w-2 h-2 rounded text-white mx-1 text-center text-xs flex items-center justify-center bg-gray-200"
-                ></div>
-                <div
-                  class="w-2 h-2 rounded text-white mx-1 text-center text-xs flex items-center justify-center bg-gray-200"
-                ></div>
-                <div
-                  class="w-2 h-2 rounded text-white mx-1 text-center text-xs flex items-center justify-center bg-gray-200"
-                ></div>
-                <div
-                  class="w-2 h-2 rounded text-white mx-1 text-center text-xs flex items-center justify-center bg-gray-200"
-                ></div>
-                <div
-                  class="w-2 h-2 rounded text-white mx-1 text-center text-xs flex items-center justify-center bg-gray-200"
-                ></div>
-                <div
-                  class="w-2 h-2 rounded text-white mx-1 text-center text-xs flex items-center justify-center bg-gray-200"
-                ></div>
-                <div
-                  class="w-2 h-2 rounded text-white mx-1 text-center text-xs flex items-center justify-center bg-gray-200"
-                ></div>
-                <div
-                  class="w-2 h-2 rounded text-white mx-1 text-center text-xs flex items-center justify-center bg-gray-200"
+                  for:each={questions}
+                  for:item="q"
+                  key={q.Id}
                 ></div>
               </div>
             </div>
@@ -61,16 +34,19 @@
         </div>
 
         <p class="question-no">
-          Question 1 of 10
+          Question { currentQuestion } of { questions.length }
         </p>
         <h3 class={timerClass}>
           {countDown}
         </h3>
         <p class="question">
-          questions[currentQuestion - 1].question
+          { question.QuestionText__c }
         </p>
 
-        <c-multiple-choice-comp> </c-multiple-choice-comp>
+        <c-multiple-choice-comp
+          if:true={MULTIPLE_CHOICE}
+          options={answerOptions}
+        ></c-multiple-choice-comp>
       </div>
     </div>
   </div>

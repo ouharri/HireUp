@@ -50,6 +50,7 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #000;
+  background-color: #fff;
   align-content: center;
   flex-direction: column;
   flex-wrap: nowrap;

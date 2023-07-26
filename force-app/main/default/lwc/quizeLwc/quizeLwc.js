@@ -10,11 +10,15 @@ import quizePatternImage from '@salesforce/resourceUrl/quizePatternImage';
 
 export default class QuizeLwc extends LightningElement {
     @track isQuizStarted = false;
+    @track currentQuestion = 1;
     @track countDown = 30;
-    @track imageBgLink;
+    @track question = '';
+    @track imageBgLink = '';
 
-    questions;
-    quiz = { 'Name': '', 'Description__c': '', 'Duration__c': '' };
+
+    questions = [];
+    answerOptions = [];
+    quiz = { 'Name': 'QUIZ', 'Description__c': '', 'Duration__c': '' };
 
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
@@ -28,6 +32,107 @@ export default class QuizeLwc extends LightningElement {
     timer = null;
     quizId = null;
     LeadId = null;
+
+    @track MULTIPLE_CHOICE = false;
+    @track TRUE_FALSE = false;
+    @track SHORT_ANSWER = false;
+    @track CURSOR = false;
+    @track PUZZLE = false;
+    @track SURVEY = false;
+
+    QUESTION_TYPES = {
+        MULTIPLE_CHOICE: 'multiple choice',
+        TRUE_FALSE: 'true/false',
+        SHORT_ANSWER: 'short answer',
+        CURSOR: 'Cursor',
+        PUZZLE: 'Puzzle',
+        SURVEY: 'Sondage'
+    };
+
+
+
+
+    setCountDown = (value) => {
+        return new Promise((resolve) => {
+            this.countDown = value;
+            resolve();
+        });
+    };
+
+    setQuestions = (value) => {
+        return new Promise((resolve) => {
+            this.questions = value;
+            resolve();
+        });
+    };
+
+    setQuestion = (value) => {
+        return new Promise((resolve) => {
+            this.question = value;
+            resolve();
+        });
+    };
+
+    setQuiz = (value) => {
+        return new Promise((resolve) => {
+            this.quiz = value;
+            resolve();
+        });
+    };
+
+    setAnswerOptions = (value) => {
+        return new Promise((resolve) => {
+            this.answerOptions = value;
+            resolve();
+        });
+    };
+
+    async setQuestionType(value) {
+        await this.SetDefaultQuestionType;
+        return new Promise((resolve,) => {
+            switch (value) {
+                case this.QUESTION_TYPES.MULTIPLE_CHOICE:
+                    this.MULTIPLE_CHOICE = true;
+                    break;
+                case this.QUESTION_TYPES.TRUE_FALSE:
+                    this.TRUE_FALSE = true;
+                    break;
+                case this.QUESTION_TYPES.SHORT_ANSWER:
+                    this.SHORT_ANSWER = true;
+                    break;
+                case this.QUESTION_TYPES.CURSOR:
+                    this.CURSOR = true;
+                    break;
+                case this.QUESTION_TYPES.PUZZLE:
+                    this.PUZZLE = true;
+                    break;
+                case this.QUESTION_TYPES.SURVEY:
+                    this.SURVEY = true;
+                    break;
+                default:
+                    this.MULTIPLE_CHOICE = true;
+                    break;
+            }
+        });
+    }
+
+    incrementCurrentQuestion = () => {
+        return new Promise((resolve) => {
+            this.currentQuestion++;
+            resolve();
+        });
+    };
+
+    setDefaultQuestionType = new Promise((resolve) => {
+        this.MULTIPLE_CHOICE = false;
+        this.TRUE_FALSE = false;
+        this.SHORT_ANSWER = false;
+        this.CURSOR = false;
+        this.PUZZLE = false;
+        this.SURVEY = false;
+        resolve();
+    });
+
 
     get timerClass() {
         return this.countDown < 10 ? 'warning' : 'count-down';
@@ -63,6 +168,9 @@ export default class QuizeLwc extends LightningElement {
         }
     }
 
+
+    // //////////////////// //
+
     async handleValidToken() {
         console.log('Token valide !');
         try {
@@ -87,16 +195,37 @@ export default class QuizeLwc extends LightningElement {
         console.error('Token non trouvé dans l\'URL !');
     }
 
-    countDownTimer() {
+    async countDownTimer() {
         if (this.countDown > 0) {
             this.timer = setTimeout(() => {
                 this.countDown--;
                 this.countDownTimer();
             }, 1000);
         } else if (this.countDown === 0) {
-            // Countdown reached zero, handle the end of the quiz or move to the next question.
-            // For example:
-            this.handleQuizEnd();
+            if (this.currentQuestion === this.questions.length) {
+                this.handleQuizEnd();
+            } else {
+                this.handleNextQuestion();
+            }
+        }
+    }
+
+    async openFullscreen() {
+
+        await (this.template.querySelector('.app').requestFullscreen() ||
+            this.template.querySelector('.app').webkitRequestFullscreen() ||
+            this.template.querySelector('.app').mozRequestFullScreen() ||
+            this.template.querySelector('.app').msRequestFullscreen());
+
+    }
+
+    closeFullscreen() {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) { /* Safari */
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { /* IE11 */
+            document.msExitFullscreen();
         }
     }
 
@@ -104,26 +233,54 @@ export default class QuizeLwc extends LightningElement {
         // Code to handle the end of the quiz, show results, etc.
         // For example, clear the timer:
         clearTimeout(this.timer);
-        this.countDownTimer();
         this.countDown = 30;
+        this.countDownTimer();
+    }
+
+    async handleNextQuestion() {
+        await this.setCountDown(this.question.TimeLimit__c);
+
+        clearTimeout(this.timer);
+
+        await this.countDownTimer();
+
+        await this.incrementCurrentQuestion();
+
+        if (this.currentQuestion > this.questions.length) {
+            this.handleQuizEnd();
+        } else {
+            await this.setQuestion(this.questions[this.currentQuestion - 1].question);
+            await this.setAnswerOptions(this.questions[this.currentQuestion - 1].answerOptions);
+            await this.setQuestionType(this.question.QuestionType__c);
+
+            await this.countDownTimer();
+        }
     }
 
     startQuiz() {
         this.isQuizStarted = true;
         this.countDownTimer();
+        this.openFullscreen();
     }
 
     async getQuizzes() {
         try {
-            console.log('quizId : ', this.quizId);
-            console.log('LeadId : ', this.LeadId);
             const result = await getQuizzesWithQuestionsAndOptions({ quizId: this.quizId });
-            console.log('result : ', result);
-            if (result && result.quiz) {
-                this.questions = result.questions;
-                this.quiz = result.quiz;
-                console.log('questions : ', this.questions);
-                console.log('Quiz : ', this.quiz);
+
+            if (result && result.quiz && result.questions) {
+
+                await this.setQuiz(result.quiz);
+
+                await this.setQuestions(result.questions);
+
+                await this.setQuestion(this.questions[0].question);
+
+                await this.setAnswerOptions(this.questions[0].answerOptions)
+
+                await this.setQuestionType(this.question.QuestionType__c)
+
+                await this.setCountDown(this.question.TimeLimit__c);
+
             } else {
                 console.error('No quiz data found for the given quizId.');
             }

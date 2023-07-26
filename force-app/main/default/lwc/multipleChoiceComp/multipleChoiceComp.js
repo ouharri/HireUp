@@ -1,4 +1,4 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement, api } from 'lwc';
 import flowbitejs from '@salesforce/resourceUrl/flowbitejs';
 import flowbitecss from '@salesforce/resourceUrl/flowbitecss';
 import { loadStyle, loadScript } from 'lightning/platformResourceLoader';
@@ -6,6 +6,8 @@ import { loadStyle, loadScript } from 'lightning/platformResourceLoader';
 
 
 export default class MultipleChoiceComp extends LightningElement {
+
+    @api options;
 
     renderedCallback() {
         Promise.all([

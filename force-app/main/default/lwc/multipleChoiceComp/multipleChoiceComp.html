@@ -1,48 +1,36 @@
 <template>
-
-      <div class="row-span-3">
-        <div class="min-h-full flex flex-col justify-center">
-          <div
-            class="options-container grid grid-cols-1 gap-3 md:gap-6 md:grid-cols-2"
-          >
-            <!-- v-for="(item, index) in options" -->
-            <!-- :key="index" -->
-            <!-- onclick="correctAnswer(item.isCorrect, item.answer)" -->
-            <button type="button">
-              item.answer
-            </button>
-            <!-- :class="{
+  <div class="row-span-3">
+    <div class="min-h-full flex flex-col justify-center">
+      <div
+        class="options-container grid grid-cols-1 gap-3 md:gap-6 md:grid-cols-2"
+      >
+        <!-- v-for="(item, index) in options" -->
+        <!-- :key="index" -->
+        <!-- onclick="correctAnswer(item.isCorrect, item.answer)" -->
+        <button
+          type="button"
+          for:each={options}
+          for:item="item"
+          key={item.Id}
+        >
+          {item.AnswerOptionText__c}
+        </button>
+        <!-- :class="{
           'bg-red-200': store.showAnswer && isInvalidAnswer,
           'bg-green-200': store.showAnswer && isValidAnswer,
           'hover:bg-gray-300': !store.showAnswer,
         }" -->
-            <button
-              class="w-full bg-gray-200 rounded-lg p-4 transition md:text-lg md:p-6 hover:bg-gray-300"
-            >
-              HELLO
-            </button>
-            <button
-              class="w-full bg-gray-200 rounded-lg p-4 transition md:text-lg md:p-6 hover:bg-gray-300"
-            >
-              HELLO
-            </button>
-            <button
-              class="w-full bg-gray-200 rounded-lg p-4 transition md:text-lg md:p-6 hover:bg-gray-300"
-            >
-              HELLO
-            </button>
-          </div>
-        </div>
       </div>
+    </div>
+  </div>
 
-      <!-- <div class="btn"> -->
-        <!-- v-show="currentQuestion < questions.length" -->
-        <!-- <button class="next-btn" onclick={handleNextQuestion}>
+  <!-- <div class="btn"> -->
+  <!-- v-show="currentQuestion < questions.length" -->
+  <!-- <button class="next-btn" onclick={handleNextQuestion}>
           Next
         </button>
         <button class="submit-btn">
           Submit
         </button>
       </div> -->
-    
 </template>
