@@ -15,7 +15,6 @@ export default class QuizeLwc extends LightningElement {
     @track question = '';
     @track imageBgLink = '';
 
-
     questions = [];
     answerOptions = [];
     quiz = { 'Name': 'QUIZ', 'Description__c': '', 'Duration__c': '' };
@@ -34,6 +33,7 @@ export default class QuizeLwc extends LightningElement {
     LeadId = null;
 
     @track MULTIPLE_CHOICE = false;
+    @track SINGLE_CHOICE = false;
     @track TRUE_FALSE = false;
     @track SHORT_ANSWER = false;
     @track CURSOR = false;
@@ -42,14 +42,13 @@ export default class QuizeLwc extends LightningElement {
 
     QUESTION_TYPES = {
         MULTIPLE_CHOICE: 'multiple choice',
+        SINGLE_CHOICE: 'single choice',
         TRUE_FALSE: 'true/false',
         SHORT_ANSWER: 'short answer',
         CURSOR: 'Cursor',
         PUZZLE: 'Puzzle',
         SURVEY: 'Sondage'
     };
-
-
 
 
     setCountDown = (value) => {
@@ -89,10 +88,13 @@ export default class QuizeLwc extends LightningElement {
 
     async setQuestionType(value) {
         await this.SetDefaultQuestionType;
-        return new Promise((resolve,) => {
+        return new Promise((resolve) => {
             switch (value) {
                 case this.QUESTION_TYPES.MULTIPLE_CHOICE:
                     this.MULTIPLE_CHOICE = true;
+                    break;
+                case this.QUESTION_TYPES.SINGLE_CHOICE:
+                    this.SINGLE_CHOICE = true;
                     break;
                 case this.QUESTION_TYPES.TRUE_FALSE:
                     this.TRUE_FALSE = true;
@@ -113,18 +115,13 @@ export default class QuizeLwc extends LightningElement {
                     this.MULTIPLE_CHOICE = true;
                     break;
             }
+            resolve();
         });
     }
 
-    incrementCurrentQuestion = () => {
-        return new Promise((resolve) => {
-            this.currentQuestion++;
-            resolve();
-        });
-    };
-
     setDefaultQuestionType = new Promise((resolve) => {
         this.MULTIPLE_CHOICE = false;
+        this.SINGLE_CHOICE = false;
         this.TRUE_FALSE = false;
         this.SHORT_ANSWER = false;
         this.CURSOR = false;
@@ -133,6 +130,12 @@ export default class QuizeLwc extends LightningElement {
         resolve();
     });
 
+    incrementCurrentQuestion = () => {
+        return new Promise((resolve) => {
+            this.currentQuestion++;
+            resolve();
+        });
+    };
 
     get timerClass() {
         return this.countDown < 10 ? 'warning' : 'count-down';
@@ -158,7 +161,7 @@ export default class QuizeLwc extends LightningElement {
                 if (result) {
                     this.handleValidToken();
                 } else {
-                    this.handleInvalidToken(token);
+                    this.handleInvalidToken();
                 }
             } catch (error) {
                 console.error('Erreur lors de la validation du token :', error);
@@ -172,7 +175,6 @@ export default class QuizeLwc extends LightningElement {
     // //////////////////// //
 
     async handleValidToken() {
-        console.log('Token valide !');
         try {
             const result = await getIdsFromToken({ encryptedToken: this.token });
             if (result && result.QuizId && result.LeadId) {
@@ -211,56 +213,49 @@ export default class QuizeLwc extends LightningElement {
     }
 
     async openFullscreen() {
-
         await (this.template.querySelector('.app').requestFullscreen() ||
             this.template.querySelector('.app').webkitRequestFullscreen() ||
             this.template.querySelector('.app').mozRequestFullScreen() ||
             this.template.querySelector('.app').msRequestFullscreen());
-
     }
 
     closeFullscreen() {
         if (document.exitFullscreen) {
             document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) { /* Safari */
+        } else if (document.webkitExitFullscreen) {
             document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) { /* IE11 */
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
             document.msExitFullscreen();
         }
     }
 
     handleQuizEnd() {
-        // Code to handle the end of the quiz, show results, etc.
-        // For example, clear the timer:
-        clearTimeout(this.timer);
         this.countDown = 0;
-        this.countDownTimer();
+        clearTimeout(this.timer);
+        this.closeFullscreen();
     }
 
     async handleNextQuestion() {
         await this.setCountDown(this.question.TimeLimit__c);
-
         clearTimeout(this.timer);
-
         await this.countDownTimer();
-
         await this.incrementCurrentQuestion();
-
         if (this.currentQuestion > this.questions.length) {
             this.handleQuizEnd();
         } else {
             await this.setQuestion(this.questions[this.currentQuestion - 1].question);
             await this.setAnswerOptions(this.questions[this.currentQuestion - 1].answerOptions);
             await this.setQuestionType(this.question.QuestionType__c);
-
             await this.countDownTimer();
         }
     }
 
     async handleAnswerOptionClick(event) {
-        // const selectedAnswer = event.target.dataset.answer;
         await this.handleNextQuestion();
     }
+
     startQuiz() {
         this.isQuizStarted = true;
         this.countDownTimer();
@@ -270,6 +265,8 @@ export default class QuizeLwc extends LightningElement {
     async getQuizzes() {
         try {
             const result = await getQuizzesWithQuestionsAndOptions({ quizId: this.quizId });
+
+            console.log(result);
 
             if (result && result.quiz && result.questions) {
 
@@ -291,6 +288,11 @@ export default class QuizeLwc extends LightningElement {
         } catch (error) {
             console.error('Erreur lors de la récupération des quizzes :', error);
         }
+    }
+
+    handleClickedAnswer(event) {
+        const selectedAnswer = event.detail.Answer;
+        console.log(selectedAnswer.OptionText, selectedAnswer.OptionId);
     }
 
     connectedCallback() {

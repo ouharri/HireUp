@@ -4,22 +4,14 @@
       <div
         class="options-container grid grid-cols-1 gap-3 md:gap-6 md:grid-cols-2"
       >
-        <!-- v-for="(item, index) in options" -->
-        <!-- :key="index" -->
-        <!-- onclick="correctAnswer(item.isCorrect, item.answer)" -->
-        <button
-          type="button"
+        <c-question-option-comp
           for:each={options}
           for:item="item"
           key={item.Id}
+          option={item}
+          onclickedoption={handleAnswer}
         >
-          {item.AnswerOptionText__c}
-        </button>
-        <!-- :class="{
-          'bg-red-200': store.showAnswer && isInvalidAnswer,
-          'bg-green-200': store.showAnswer && isValidAnswer,
-          'hover:bg-gray-300': !store.showAnswer,
-        }" -->
+        </c-question-option-comp>
       </div>
     </div>
   </div>

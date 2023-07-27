@@ -17,4 +17,21 @@ export default class MultipleChoiceComp extends LightningElement {
             .then(() => {
             })
     }
+
+    AnswerWrapper = class {
+        constructor(answerOptionText, questionId) {
+            this.OptionText = answerOptionText;
+            this.OptionId = questionId;
+        }
+    }
+
+    handleAnswer(event) {
+        this.dispatchEvent(
+            new CustomEvent('optionclicked', {
+                detail: {
+                    "Answer": new this.AnswerWrapper(event.detail.option.AnswerOptionText__c, event.detail.option.Id)
+                }
+            })
+        );
+    }
 }
