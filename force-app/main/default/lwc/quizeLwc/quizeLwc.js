@@ -233,7 +233,7 @@ export default class QuizeLwc extends LightningElement {
         // Code to handle the end of the quiz, show results, etc.
         // For example, clear the timer:
         clearTimeout(this.timer);
-        this.countDown = 30;
+        this.countDown = 0;
         this.countDownTimer();
     }
 
@@ -257,6 +257,10 @@ export default class QuizeLwc extends LightningElement {
         }
     }
 
+    async handleAnswerOptionClick(event) {
+        // const selectedAnswer = event.target.dataset.answer;
+        await this.handleNextQuestion();
+    }
     startQuiz() {
         this.isQuizStarted = true;
         this.countDownTimer();
