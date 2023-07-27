@@ -1,6 +1,6 @@
 import { LightningElement, api } from 'lwc';
 
-export default class QuestionOptionComp extends LightningElement {
+export default class SingleQuestionOptionComp extends LightningElement {
     @api option;
 
     handleOption(event) {

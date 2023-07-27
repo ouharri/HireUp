@@ -1,0 +1,28 @@
+<template>
+    <div class="row-span-3">
+      <div class="min-h-full flex flex-col justify-center">
+        <div
+          class="options-container grid grid-cols-1 gap-3 md:gap-6 md:grid-cols-2"
+        >
+          <c-single-question-option-comp
+            for:each={options}
+            for:item="item"
+            key={item.Id}
+            option={item}
+            onclickedoption={handleAnswer}
+          >
+          </c-single-question-option-comp>
+        </div>
+      </div>
+    </div>
+  
+    <!-- <div class="btn"> -->
+    <!-- v-show="currentQuestion < questions.length" -->
+    <!-- <button class="next-btn" onclick={handleNextQuestion}>
+            Next
+          </button>
+          <button class="submit-btn">
+            Submit
+          </button>
+        </div> -->
+  </template>

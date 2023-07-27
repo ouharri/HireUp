@@ -4,14 +4,14 @@
       <div
         class="options-container grid grid-cols-1 gap-3 md:gap-6 md:grid-cols-2"
       >
-        <c-question-option-comp
+        <c-single-question-option-comp
           for:each={options}
           for:item="item"
           key={item.Id}
           option={item}
           onclickedoption={handleAnswer}
         >
-        </c-question-option-comp>
+        </c-single-question-option-comp>
       </div>
     </div>
   </div>

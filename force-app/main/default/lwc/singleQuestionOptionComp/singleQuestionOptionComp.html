@@ -1,0 +1,15 @@
+<template>
+  <!-- v-for="(item, index) in options" -->
+  <!-- :key="index" -->
+  <!-- onclick="correctAnswer(item.isCorrect, item.answer)" -->
+  <div class="options">
+    <button type="button" onclick={handleOption}>
+      {option.AnswerOptionText__c}
+    </button>
+  </div>
+  <!-- :class="{
+          'bg-red-200': store.showAnswer && isInvalidAnswer,
+          'bg-green-200': store.showAnswer && isValidAnswer,
+          'hover:bg-gray-300': !store.showAnswer,
+        }" -->
+</template>

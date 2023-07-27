@@ -48,6 +48,11 @@
           options={answerOptions}
           onoptionclicked={handleClickedAnswer}
         ></c-multiple-choice-comp>
+        <c-single-choice-comp
+          if:true={SINGLE_CHOICE}
+          options={answerOptions}
+          onoptionclicked={handleClickedAnswer}
+        ></c-single-choice-comp>
       </div>
     </div>
   </div>
