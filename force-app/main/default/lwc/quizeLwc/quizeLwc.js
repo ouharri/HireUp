@@ -50,7 +50,6 @@ export default class QuizeLwc extends LightningElement {
         SURVEY: 'Sondage'
     };
 
-
     setCountDown = (value) => {
         return new Promise((resolve) => {
             this.countDown = value;
@@ -293,6 +292,11 @@ export default class QuizeLwc extends LightningElement {
     handleClickedAnswer(event) {
         const selectedAnswer = event.detail.Answer;
         console.log(selectedAnswer.OptionText, selectedAnswer.OptionId);
+    }
+
+    handleClickedAnswerOption(event) {
+        const selectedAnswerOption = event.detail;
+        console.log('selectedAnswerOption', selectedAnswerOption);
     }
 
     connectedCallback() {

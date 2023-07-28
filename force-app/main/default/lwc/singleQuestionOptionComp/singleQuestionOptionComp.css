@@ -17,9 +17,9 @@
   .options button:hover {
 	background-color: #4aaaacda;
   }
-  /* .options-container button:focus {
-	background-color: #ecae10;
-  } */
+  .options-container button:focus {
+	background-color: #4aaaac;
+  }
   
 
   /* media-queries */

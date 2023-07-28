@@ -6,13 +6,6 @@
   box-sizing: border-box;
 }
 
-body,
-html {
-  height: 100%;
-  width: 100%;
-  position: relative;
-}
-
 .containnerApp{
 	padding: 0 !important;
 	margin: 0 !important;
@@ -95,40 +88,6 @@ html {
 	margin-bottom: 25px;
 	padding: 0 20px;
   }
-
-  
-  .btn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 70%;
-    margin: 0 auto;
-    }
-    
-    .btn .next-btn,
-    .btn .submit-btn {
-    width: 150px;
-    padding: 9px;
-    margin-top: 13px;
-    border-radius: 5px;
-    border: 2.9px solid #333;
-    background-color: transparent;
-    color: #000;
-    font-size: 17px;
-    font-weight: 600;
-    cursor: pointer;
-    text-align: center;
-    outline: none;
-    margin-top: 40px;
-    outline: none;
-    transition: all 0.7s ease 0s;
-    }
-    
-    .btn .next-btn:hover,
-    .btn .submit-btn:hover {
-    color: #fff;
-    background-color: #333;
-    }
     
     .count-down {
     opacity: .7;

@@ -2,14 +2,17 @@
   <!-- v-for="(item, index) in options" -->
   <!-- :key="index" -->
   <!-- onclick="correctAnswer(item.isCorrect, item.answer)" -->
-  <div class="options">
-    <button type="button" onclick={handleOption}>
+  <div class="radio-container">
+    <input
+      type="checkbox"
+      name="selectedOption"
+      id={option.AnswerOptionText__c}
+      value={option.Id}
+      checked={isSelected}
+      onchange={handleOption}
+    />
+    <label for={option.AnswerOptionText__c} class={optionClassName}>
       {option.AnswerOptionText__c}
-    </button>
+    </label>
   </div>
-  <!-- :class="{
-          'bg-red-200': store.showAnswer && isInvalidAnswer,
-          'bg-green-200': store.showAnswer && isValidAnswer,
-          'hover:bg-gray-300': !store.showAnswer,
-        }" -->
 </template>

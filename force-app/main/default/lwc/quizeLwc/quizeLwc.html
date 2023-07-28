@@ -46,11 +46,13 @@
         <c-multiple-choice-comp
           if:true={MULTIPLE_CHOICE}
           options={answerOptions}
-          onoptionclicked={handleClickedAnswer}
+          question={question.Id}
+          onnextquestion={handleClickedAnswerOption}
         ></c-multiple-choice-comp>
         <c-single-choice-comp
           if:true={SINGLE_CHOICE}
           options={answerOptions}
+          question={question.Id}
           onoptionclicked={handleClickedAnswer}
         ></c-single-choice-comp>
       </div>
