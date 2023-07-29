@@ -8,19 +8,11 @@ export default class MultipleQuestionOptionComp extends LightningElement {
     @api isclickednext = false;
     @track optionClassName = 'selected';
 
-    _flag = true
-
     connectedCallback() {
         this.addEventListener('iscklickednext', () => {
-            this.answer.map((a) => {
-                this.optionClassName = (a.AnswerOption__c === this.option.Id) ? 'bg-green-200' : 'bg-red-200';
-            });
+            this.handleCorrectAnswer();
         });
     }
-
-    // disconnectedCallback() {
-    //     this.removeEventListener('iscklickednext', this.handleCustomEvent);
-    // }
 
     handleCorrectAnswer() {
         console.log('handleCorrectAnswer');
@@ -34,8 +26,6 @@ export default class MultipleQuestionOptionComp extends LightningElement {
     }
 
     handleOption(event) {
-        // if (!this._flag) this._flag = false;
-
         this.dispatchEvent(
             new CustomEvent('clickedoption', {
                 detail: {
@@ -43,15 +33,6 @@ export default class MultipleQuestionOptionComp extends LightningElement {
                 }
             })
         );
-
-        // if (this.isclickednext) {
-        //     this.answer.map((answer) => {
-        //         this.optionClassName = (answer.AnswerOption__c === this.option.Id) ? 'bg-green-200' : 'bg-red-200';
-        //     });
-        //     this.flag = false;
-        // }
-
     }
-
 
 }

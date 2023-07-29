@@ -74,7 +74,7 @@ export default class MultipleChoiceComp extends LightningElement {
                 event.detail.option.Id
             )
         );
-        this.isDisabled = (this.selectedOptions.length == 0);
+        this.isDisabled = (this.selectedOptions.length === 0);
         // this.handleAnswer(this.selectedOptions);
     }
 
@@ -109,6 +109,7 @@ export default class MultipleChoiceComp extends LightningElement {
                     })
                 )
                 this.selectedOptions = [];
+                this.isDisabled = true;
             }
         }, 1000)
     }

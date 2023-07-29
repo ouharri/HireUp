@@ -19,8 +19,6 @@
     cursor: pointer;
     text-align: center;
     outline: none;
-    margin-top: 44px;
-    outline: none;
     transition: all 0.7s ease 0s;
 }
 
@@ -43,8 +41,10 @@
 }
 
 .next-container{
-	margin: 0 auto -29px auto;
 	width: 70%;
+	display: flex;
+	align-items: center;
+	margin: 44px auto -29px auto;
 }
 
 .before-next-btn{

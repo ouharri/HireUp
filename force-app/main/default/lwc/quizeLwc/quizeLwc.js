@@ -17,6 +17,7 @@ export default class QuizeLwc extends LightningElement {
 
     questions = [];
     answerOptions = [];
+    isQlickedNextQuestion = false;
     quiz = { 'Name': 'QUIZ', 'Description__c': '', 'Duration__c': '' };
 
     @wire(CurrentPageReference)
@@ -136,6 +137,20 @@ export default class QuizeLwc extends LightningElement {
         });
     };
 
+    setIsNotQlickedNextQuestion = () => {
+        return new Promise((resolve) => {
+            this.isQlickedNextQuestion = false;
+            resolve();
+        });
+    };
+
+    setIsQlickedNextQuestion = () => {
+        return new Promise((resolve) => {
+            this.isQlickedNextQuestion = true;
+            resolve();
+        });
+    };
+
     get timerClass() {
         return this.countDown < 10 ? 'warning' : 'count-down';
     }
@@ -197,7 +212,7 @@ export default class QuizeLwc extends LightningElement {
     }
 
     countDownTimer() {
-        if (this.countDown > 0) {
+        if (this.countDown > 0 && !this.isQlickedNextQuestion) {
             this.timer = setTimeout(() => {
                 this.countDown--;
                 this.countDownTimer();
@@ -240,15 +255,15 @@ export default class QuizeLwc extends LightningElement {
                 })
             );
 
-        this.countDown = 0;
         clearTimeout(this.timer);
+        this.countDown = 0;
         this.closeFullscreen();
     }
 
     async handleNextQuestion() {
         await new Promise((resolve) => {
             this.template.querySelector('c-multiple-choice-comp').dispatchEvent(
-                new CustomEvent('iscklickednextquestion', {  // Correct the event name here
+                new CustomEvent('iscklickednextquestion', {
                     bubbles: true,
                     composed: true,
                 })
@@ -256,16 +271,17 @@ export default class QuizeLwc extends LightningElement {
             setTimeout(() => resolve(), 1000); // Wait for 1 second
         });
 
-        await this.incrementCurrentQuestion();
-        if (this.currentQuestion > this.questions.length) {
+        if (this.currentQuestion >= this.questions.length) {
             this.handleQuizEnd();
         } else {
+            await this.incrementCurrentQuestion();
             await this.setCountDown(this.question.TimeLimit__c).then(() => {
                 this.countDownTimer();
             });
             await this.setQuestion(this.questions[this.currentQuestion - 1].question);
             await this.setAnswerOptions(this.questions[this.currentQuestion - 1].answerOptions);
             await this.setQuestionType(this.question.QuestionType__c);
+            await this.setIsNotQlickedNextQuestion();
         }
     }
 
@@ -283,7 +299,6 @@ export default class QuizeLwc extends LightningElement {
     async getQuizzes() {
         try {
             const result = await getQuizzesWithQuestionsAndOptions({ quizId: this.quizId });
-            console.log(result);
             if (result && result.quiz && result.questions) {
                 await this.setQuiz(result.quiz);
                 await this.setQuestions(result.questions);
@@ -304,8 +319,9 @@ export default class QuizeLwc extends LightningElement {
         console.log(selectedAnswer.OptionText, selectedAnswer.OptionId);
     }
 
-    handleClickedAnswerOption(event) {
+    async handleClickedAnswerOption(event) {
         const selectedAnswerOption = event.detail;
+        await this.setIsQlickedNextQuestion();
         console.log('selectedAnswerOption', selectedAnswerOption);
 
         this.handleNextQuestion();
