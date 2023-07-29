@@ -30,7 +30,8 @@
   .radio-container .selected{
 	background-color: #4aaaac7d;
   }
-  
+
+
   .radio-container .selected:hover {
 	background-color: #4aaaacda;
   }

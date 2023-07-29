@@ -4,7 +4,7 @@
     <deleteConstraint>Restrict</deleteConstraint>
     <externalId>false</externalId>
     <label>Quize</label>
-    <referenceTo>Quize__c</referenceTo>
+    <referenceTo>Quiz__c</referenceTo>
     <relationshipLabel>Assessments</relationshipLabel>
     <relationshipName>Assessments</relationshipName>
     <required>true</required>

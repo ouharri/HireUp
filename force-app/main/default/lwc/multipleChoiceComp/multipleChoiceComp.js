@@ -13,23 +13,39 @@ export default class MultipleChoiceComp extends LightningElement {
     @track answer = '';
     @track IsClickedNext = false;
 
-    renderedCallback() {
-        Promise.all([
-            loadStyle(this, flowbitecss),
-            loadScript(this, flowbitejs),
-        ])
-            .then(() => {
-            })
+
+    connectedCallback() {
+        this.addEventListener('iscklickednextquestion', (event) => {
+            console.log('ggg');
+            this.template.querySelectorAll('c-multiple-question-option-comp')
+                ?.forEach((element) => {
+                    element.dispatchEvent(
+                        new CustomEvent('iscklickednext', {
+                            bubbles: true,
+                            composed: true
+                        })
+                    );
+                });
+        });
     }
 
 
-
-    sendEventToChild() {
-
+    async handleEvent() {
+        return new Promise((resolve) => {
+            const event = new CustomEvent('iscklickednext',
+                {
+                    bubbles: true,
+                    composed: true,
+                });
+            const childComponent = this.template.querySelectorAll('c-multiple-question-option-comp');
+            if (childComponent.length > 0) {
+                childComponent.forEach((element) => {
+                    element.dispatchEvent(event);
+                });
+            }
+            resolve();
+        });
     }
-
-
-
 
 
 
@@ -82,22 +98,9 @@ export default class MultipleChoiceComp extends LightningElement {
     }
 
     @api
-    handleNextQuestion() {
+    async handleNextQuestion() {
         this.IsClickedNext = true;
-        const event = new CustomEvent('iscklickednext',
-            {
-                bubbles: true,
-                composed: true,
-            });
-
-        const childComponent = this.template.querySelectorAll('c-multiple-question-option-comp');
-
-        if (childComponent.length > 0) {
-            childComponent.forEach((element) => {
-                element.dispatchEvent(event);
-            });
-        }
-
+        await this.handleEvent();
         setTimeout(() => {
             if (this.selectedOptions.length > 0) {
                 this.dispatchEvent(

@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>QuestionType__c</fullName>
-    <deleteConstraint>Restrict</deleteConstraint>
+    <description>This Field stores a list of possible question types, such as multiple choice, true/false, and short answer.</description>
     <externalId>false</externalId>
+    <inlineHelpText>This Field stores a list of possible question types, such as multiple choice, true/false, and short answer.</inlineHelpText>
     <label>QuestionType</label>
-    <referenceTo>QuestionType__c</referenceTo>
-    <relationshipLabel>Questions</relationshipLabel>
-    <relationshipName>Questions</relationshipName>
     <required>true</required>
     <trackTrending>false</trackTrending>
-    <type>Lookup</type>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetName>QuestionType</valueSetName>
+    </valueSet>
 </CustomField>

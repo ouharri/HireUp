@@ -1,4 +1,4 @@
-import { LightningElement, wire, track } from 'lwc';
+import { LightningElement, wire, track, api } from 'lwc';
 import { CurrentPageReference } from 'lightning/navigation';
 import flowbitejs from '@salesforce/resourceUrl/flowbitejs';
 import flowbitecss from '@salesforce/resourceUrl/flowbitecss';
@@ -196,7 +196,7 @@ export default class QuizeLwc extends LightningElement {
         console.error('Token non trouvé dans l\'URL !');
     }
 
-    async countDownTimer() {
+    countDownTimer() {
         if (this.countDown > 0) {
             this.timer = setTimeout(() => {
                 this.countDown--;
@@ -204,6 +204,7 @@ export default class QuizeLwc extends LightningElement {
             }, 1000);
         } else if (this.countDown === 0) {
             if (this.currentQuestion === this.questions.length) {
+                clearTimeout(this.timer);
                 this.handleQuizEnd();
             } else {
                 this.handleNextQuestion();
@@ -231,25 +232,43 @@ export default class QuizeLwc extends LightningElement {
     }
 
     handleQuizEnd() {
+        this.template.querySelector('c-multiple-choice-comp')
+            .dispatchEvent(
+                new CustomEvent('iscklickednextquestion', {
+                    bubbles: true,
+                    composed: true,
+                })
+            );
+
         this.countDown = 0;
         clearTimeout(this.timer);
         this.closeFullscreen();
     }
 
     async handleNextQuestion() {
-        await this.setCountDown(this.question.TimeLimit__c);
-        clearTimeout(this.timer);
-        await this.countDownTimer();
+        await new Promise((resolve) => {
+            this.template.querySelector('c-multiple-choice-comp').dispatchEvent(
+                new CustomEvent('iscklickednextquestion', {  // Correct the event name here
+                    bubbles: true,
+                    composed: true,
+                })
+            );
+            setTimeout(() => resolve(), 1000); // Wait for 1 second
+        });
+
         await this.incrementCurrentQuestion();
         if (this.currentQuestion > this.questions.length) {
             this.handleQuizEnd();
         } else {
+            await this.setCountDown(this.question.TimeLimit__c).then(() => {
+                this.countDownTimer();
+            });
             await this.setQuestion(this.questions[this.currentQuestion - 1].question);
             await this.setAnswerOptions(this.questions[this.currentQuestion - 1].answerOptions);
             await this.setQuestionType(this.question.QuestionType__c);
-            await this.countDownTimer();
         }
     }
+
 
     async handleAnswerOptionClick(event) {
         await this.handleNextQuestion();
@@ -264,23 +283,14 @@ export default class QuizeLwc extends LightningElement {
     async getQuizzes() {
         try {
             const result = await getQuizzesWithQuestionsAndOptions({ quizId: this.quizId });
-
             console.log(result);
-
             if (result && result.quiz && result.questions) {
-
                 await this.setQuiz(result.quiz);
-
                 await this.setQuestions(result.questions);
-
                 await this.setQuestion(this.questions[0].question);
-
                 await this.setAnswerOptions(this.questions[0].answerOptions)
-
                 await this.setQuestionType(this.question.QuestionType__c)
-
                 await this.setCountDown(this.question.TimeLimit__c);
-
             } else {
                 console.error('No quiz data found for the given quizId.');
             }
@@ -297,6 +307,8 @@ export default class QuizeLwc extends LightningElement {
     handleClickedAnswerOption(event) {
         const selectedAnswerOption = event.detail;
         console.log('selectedAnswerOption', selectedAnswerOption);
+
+        this.handleNextQuestion();
     }
 
     connectedCallback() {
@@ -304,6 +316,6 @@ export default class QuizeLwc extends LightningElement {
             to left top,
             rgb(255, 255, 255, 0.7),
             rgb(252, 252, 252, 0.7)
-          ),url('${quizePatternImage}')`;
+        ),url('${quizePatternImage}')`;
     }
 }

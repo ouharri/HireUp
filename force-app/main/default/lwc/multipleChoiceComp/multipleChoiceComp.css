@@ -37,6 +37,11 @@
     background-color: #4aaaac;
 }
 
+.btn button:disabled:hover {
+    color: #fff;
+    background-color: #6c757d;
+}
+
 .next-container{
 	margin: 0 auto -29px auto;
 	width: 70%;

@@ -12,21 +12,15 @@ export default class MultipleQuestionOptionComp extends LightningElement {
 
     connectedCallback() {
         this.addEventListener('iscklickednext', () => {
-            console.log('this.answer', this.answer);
             this.answer.map((a) => {
                 this.optionClassName = (a.AnswerOption__c === this.option.Id) ? 'bg-green-200' : 'bg-red-200';
             });
         });
     }
 
-    disconnectedCallback() {
-        this.removeEventListener('iscklickednext', this.handleCustomEvent);
-    }
-
-    handleCustomEvent(event) {
-        // Call the "handleCorrectAnswer" function here
-        this.handleCorrectAnswer();
-    }
+    // disconnectedCallback() {
+    //     this.removeEventListener('iscklickednext', this.handleCustomEvent);
+    // }
 
     handleCorrectAnswer() {
         console.log('handleCorrectAnswer');

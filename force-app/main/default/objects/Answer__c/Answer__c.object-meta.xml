@@ -157,8 +157,9 @@
     <gender>Feminine</gender>
     <label>Answer</label>
     <nameField>
-        <label>Answer Name</label>
-        <type>Text</type>
+        <displayFormat>A-{0000}</displayFormat>
+        <label>Answer Number</label>
+        <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Answers</pluralLabel>
     <searchLayouts></searchLayouts>
