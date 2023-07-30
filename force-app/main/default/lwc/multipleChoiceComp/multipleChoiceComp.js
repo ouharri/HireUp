@@ -32,6 +32,7 @@ export default class MultipleChoiceComp extends LightningElement {
 
     async handleEvent() {
         return new Promise((resolve) => {
+            this.dispatchEvent(new CustomEvent('clicked-next'));
             const event = new CustomEvent('iscklickednext',
                 {
                     bubbles: true,

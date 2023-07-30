@@ -224,6 +224,8 @@ export default class QuizeLwc extends LightningElement {
             } else {
                 this.handleNextQuestion();
             }
+        } else {
+            clearTimeout(this.timer);
         }
     }
 
@@ -256,11 +258,13 @@ export default class QuizeLwc extends LightningElement {
             );
 
         clearTimeout(this.timer);
-        this.countDown = 0;
+        // this.countDown = 0;
         this.closeFullscreen();
     }
 
     async handleNextQuestion() {
+        clearTimeout(this.timer);
+
         await new Promise((resolve) => {
             this.template.querySelector('c-multiple-choice-comp').dispatchEvent(
                 new CustomEvent('iscklickednextquestion', {
@@ -274,6 +278,7 @@ export default class QuizeLwc extends LightningElement {
         if (this.currentQuestion >= this.questions.length) {
             this.handleQuizEnd();
         } else {
+            await this.setIsNotQlickedNextQuestion();
             await this.incrementCurrentQuestion();
             await this.setCountDown(this.question.TimeLimit__c).then(() => {
                 this.countDownTimer();
@@ -281,9 +286,9 @@ export default class QuizeLwc extends LightningElement {
             await this.setQuestion(this.questions[this.currentQuestion - 1].question);
             await this.setAnswerOptions(this.questions[this.currentQuestion - 1].answerOptions);
             await this.setQuestionType(this.question.QuestionType__c);
-            await this.setIsNotQlickedNextQuestion();
         }
     }
+
 
 
     async handleAnswerOptionClick(event) {
@@ -333,5 +338,8 @@ export default class QuizeLwc extends LightningElement {
             rgb(255, 255, 255, 0.7),
             rgb(252, 252, 252, 0.7)
         ),url('${quizePatternImage}')`;
+        this.addEventListener('clicked-next', () => {
+            clearTimeout(this.timer);
+        });
     }
 }
