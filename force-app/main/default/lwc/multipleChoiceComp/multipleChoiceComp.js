@@ -109,6 +109,7 @@ export default class MultipleChoiceComp extends LightningElement {
                         detail: this.selectedOptions
                     })
                 )
+                this.IsClickedNext = false;
                 this.selectedOptions = [];
                 this.isDisabled = true;
             }
