@@ -16,10 +16,10 @@ export default class MultipleQuestionOptionComp extends LightningElement {
 
     handleCorrectAnswer() {
         console.log('handleCorrectAnswer');
-        this.optionClassName = 'bg-red-200';
+        this.optionClassName = 'bg-red-400';
         this.answer.map((a) => {
             if (a.AnswerOption__c === this.option.Id) {
-                this.optionClassName = 'bg-green-200';
+                this.optionClassName = 'bg-green-400';
                 return;
             }
         });
@@ -28,9 +28,7 @@ export default class MultipleQuestionOptionComp extends LightningElement {
     handleOption(event) {
         this.dispatchEvent(
             new CustomEvent('clickedoption', {
-                detail: {
-                    option: this.option
-                }
+                detail: this.option
             })
         );
     }

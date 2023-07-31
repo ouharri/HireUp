@@ -1,1 +1,76 @@
-/* css */
+.btn {
+	display: flex;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.btn .next-btn,
+.btn .submit-btn {
+	width: 100px;
+	padding: 5px 0px;
+	border: 0px solid transparent;
+	background-color: transparent;
+	color: transparent;
+	text-align: center;
+	outline: none;
+	transition: all 0.7s ease 0s;
+}
+
+.next-container {
+	width: 70%;
+	display: flex;
+	align-items: center;
+	margin: 44px auto -29px auto;
+}
+
+.before-next-btn {
+	width: calc(70% - 100px);
+}
+
+@media (max-width: 960px) {
+	.btn .submit-btn {
+		width: 90px;
+		padding: 5px 0px;
+	}
+
+	.next-container {
+		font-size: 18px;
+		width: 80%;
+	}
+
+	.before-next-btn {
+		width: calc(80% - 90px);
+	}
+}
+
+@media (max-width: 767px) {
+	.btn .submit-btn {
+		width: 85px;
+		padding: 5px 0px;
+	}
+
+	.next-container {
+		width: 85%;
+		font-size: 17px;
+	}
+
+	.before-next-btn {
+		width: calc(85% - 85px);
+	}
+}
+
+@media (max-width: 500px) {
+	.btn .submit-btn {
+		width: 80px;
+	}
+
+	.next-container {
+		width: 90%;
+		font-size: 16px;
+	}
+
+	.before-next-btn {
+		width: calc(90% - 80px);
+	}
+}

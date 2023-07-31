@@ -1,11 +1,17 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api, track } from 'lwc';
 import flowbitejs from '@salesforce/resourceUrl/flowbitejs';
 import flowbitecss from '@salesforce/resourceUrl/flowbitecss';
 import { loadStyle, loadScript } from 'lightning/platformResourceLoader';
+import getAnsswer from '@salesforce/apex/QuizController.getAnsswer';
+
 
 export default class SingleChoiceComp extends LightningElement {
 
     @api options;
+    @api question;
+    @track isClickedNext = false;
+    @track answer = '';
+    selectedOptions = [{ OptionText: '', OptionId: '' }];
 
     renderedCallback() {
         Promise.all([
@@ -17,19 +23,83 @@ export default class SingleChoiceComp extends LightningElement {
     }
 
     AnswerWrapper = class {
-        constructor(answerOptionText, questionId) {
+        constructor(answerOptionText = '', questionId = '') {
             this.OptionText = answerOptionText;
             this.OptionId = questionId;
         }
     }
 
-    handleAnswer(event) {
-        this.dispatchEvent(
-            new CustomEvent('optionclicked', {
-                detail: {
-                    "Answer": new this.AnswerWrapper(event.detail.option.AnswerOptionText__c, event.detail.option.Id)
-                }
-            })
+    addObjectToArray(objectToAdd) {
+        return new Promise((resolve) => {
+            this.selectedOptions = [];
+            this.selectedOptions.push(objectToAdd);
+            resolve();
+        });
+
+    }
+
+    async handleEvent() {
+        return new Promise((resolve) => {
+            this.dispatchEvent(new CustomEvent('clicked-next'));
+            const event = new CustomEvent('iscklickednext', {
+                bubbles: true,
+                composed: true,
+            });
+            const childComponent = this.template.querySelectorAll('c-single-question-option-comp');
+            if (childComponent && childComponent.length > 0) {
+                childComponent.forEach((element) => {
+                    element.dispatchEvent(event);
+                });
+            }
+            resolve();
+        });
+    }
+
+    async handleAnswer(event) {
+        this.isClickedNext = true;
+        await this.addObjectToArray(
+            new this.AnswerWrapper(
+                event.detail.AnswerOptionText__c,
+                event.detail.Id
+            )
         );
+        await this.handleEvent();
+        console.log('selected', this.selectedOptions);
+        setTimeout(() => {
+            this.dispatchEvent(
+                new CustomEvent('nextquestion', {
+                    detail: this.selectedOptions,
+                })
+            )
+        }, 1000)
+    }
+
+    async renderedCallback() {
+        this.answer = await getAnsswer({ idQuestion: this.question });
+    }
+
+    connectedCallback() {
+        this.addObjectToArray(this.AnswerWrapper);
+        this.addEventListener('iscklickednextquestion', (event) => {
+            this.isClickedNext = true;
+            this.template.querySelectorAll('c-single-question-option-comp')
+                ?.forEach((element) => {
+                    element.dispatchEvent(
+                        new CustomEvent('iscklickednext', {
+                            bubbles: true,
+                            composed: true
+                        })
+                    );
+                });
+            // setTimeout(() => this.isClickedNext = false, 1000);
+        });
+        this.addEventListener('timeOut', async () => {
+            await this.handleEvent();
+            this.dispatchEvent(
+                new CustomEvent('checknextquestion', {
+                    detail: this.selectedOptions,
+                })
+            );
+        });
     }
 }

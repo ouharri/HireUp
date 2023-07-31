@@ -1,6 +1,4 @@
 import { LightningElement, api, track } from 'lwc';
-import flowbitejs from '@salesforce/resourceUrl/flowbitejs';
-import flowbitecss from '@salesforce/resourceUrl/flowbitecss';
 import { loadStyle, loadScript } from 'lightning/platformResourceLoader';
 import getAnsswer from '@salesforce/apex/QuizController.getAnsswer';
 
@@ -16,6 +14,7 @@ export default class MultipleChoiceComp extends LightningElement {
 
     connectedCallback() {
         this.addEventListener('iscklickednextquestion', (event) => {
+            this.IsClickedNext = true;
             console.log('ggg');
             this.template.querySelectorAll('c-multiple-question-option-comp')
                 ?.forEach((element) => {
@@ -26,20 +25,37 @@ export default class MultipleChoiceComp extends LightningElement {
                         })
                     );
                 });
+            setTimeout(() => this.IsClickedNext = false, 1000);
+        });
+        this.addEventListener('timeOut', async () => {
+            await this.handleEvent();
+            this.dispatchEvent(
+                new CustomEvent('checknextquestion', {
+                    detail: this.selectedOptions,
+                })
+            );
+            this.selectedOptions = [];
+            this.isDisabled = true;
         });
     }
 
+    async renderedCallback() {
+        this.answer = await getAnsswer({ idQuestion: this.question });
+    }
+
+    get nextOrFinish() {
+        return 'Next';
+    }
 
     async handleEvent() {
         return new Promise((resolve) => {
             this.dispatchEvent(new CustomEvent('clicked-next'));
-            const event = new CustomEvent('iscklickednext',
-                {
-                    bubbles: true,
-                    composed: true,
-                });
+            const event = new CustomEvent('iscklickednext', {
+                bubbles: true,
+                composed: true,
+            });
             const childComponent = this.template.querySelectorAll('c-multiple-question-option-comp');
-            if (childComponent.length > 0) {
+            if (childComponent && childComponent.length > 0) {
                 childComponent.forEach((element) => {
                     element.dispatchEvent(event);
                 });
@@ -47,8 +63,6 @@ export default class MultipleChoiceComp extends LightningElement {
             resolve();
         });
     }
-
-
 
     AnswerWrapper = class {
         constructor(answerOptionText, questionId) {
@@ -71,12 +85,11 @@ export default class MultipleChoiceComp extends LightningElement {
     handelSelectedOptions(event) {
         this.addOrRemoveObjectFromArray(
             new this.AnswerWrapper(
-                event.detail.option.AnswerOptionText__c,
-                event.detail.option.Id
+                event.detail.AnswerOptionText__c,
+                event.detail.Id
             )
         );
         this.isDisabled = (this.selectedOptions.length === 0);
-        // this.handleAnswer(this.selectedOptions);
     }
 
     async setOptionClassName(value) {
@@ -84,18 +97,6 @@ export default class MultipleChoiceComp extends LightningElement {
             this.optionClassName = value;
             resolve();
         });
-    }
-
-    // handleAnswer() {
-    //     this.dispatchEvent(
-    //         new CustomEvent('optionclicked', {
-    //             detail: this.selectedOptions
-    //         })
-    //     );
-    // }
-
-    async renderedCallback() {
-        this.answer = await getAnsswer({ idQuestion: this.question });
     }
 
     @api
@@ -109,7 +110,6 @@ export default class MultipleChoiceComp extends LightningElement {
                         detail: this.selectedOptions
                     })
                 )
-                this.IsClickedNext = false;
                 this.selectedOptions = [];
                 this.isDisabled = true;
             }

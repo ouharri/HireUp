@@ -2,13 +2,13 @@
 	display: flex;
 	align-items: center;
 	margin-bottom: 10px;
-  }
-  
-  .radio-container input[type="checkbox"] {
+}
+
+.radio-container input[type="checkbox"] {
 	display: none;
-  }
-  
-  .radio-container label {
+}
+
+.radio-container label {
 	cursor: pointer;
 	font-size: 18px;
 	font-weight: 600;
@@ -25,39 +25,39 @@
 	border: none;
 	text-align: center;
 	outline: none;
-  }
+}
 
-  .radio-container .selected{
+.radio-container .selected {
 	background-color: #4aaaac7d;
-  }
+}
 
 
-  .radio-container .selected:hover {
+.radio-container .selected:hover {
 	background-color: #4aaaacda;
-  }
-  
-  .radio-container input[type="checkbox"]:checked + .selected {
+}
+
+.radio-container input[type="checkbox"]:checked+.selected {
 	background-color: #48bbbc;
-  }
-  
-  
-  @media (max-width: 960px) {
+}
+
+
+@media (max-width: 960px) {
 	.radio-container label {
-	  width: 80%;
-	  font-size: 18px;
+		width: 80%;
+		font-size: 18px;
 	}
-  }
-  
-  @media (max-width: 767px) {
+}
+
+@media (max-width: 767px) {
 	.radio-container label {
-	  width: 85%;
-	  font-size: 17px;
+		width: 85%;
+		font-size: 17px;
 	}
-  }
-  
-  @media (max-width: 500px) {
+}
+
+@media (max-width: 500px) {
 	.radio-container label {
-	  width: 90%;
-	  font-size: 16px;
+		width: 90%;
+		font-size: 16px;
 	}
-  }
+}

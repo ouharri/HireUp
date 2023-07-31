@@ -23,10 +23,10 @@
       }" -->
               <div class="flex my-4 gap-2 mb-[2rem !important]">
                 <div
-                  class="w-2 h-2 rounded text-white mx-1 text-center text-xs flex items-center justify-center bg-gray-200"
                   for:each={questions}
                   for:item="q"
                   key={q.Id}
+                  class={q.statutClass}
                 ></div>
               </div>
             </div>
@@ -47,13 +47,15 @@
           if:true={MULTIPLE_CHOICE}
           options={answerOptions}
           question={question.Id}
-          onnextquestion={handleClickedAnswerOption}
+          onchecknextquestion={checkQuestion}
+          onnextquestion={handleChoiceAnswer}
         ></c-multiple-choice-comp>
         <c-single-choice-comp
           if:true={SINGLE_CHOICE}
           options={answerOptions}
           question={question.Id}
-          onoptionclicked={handleClickedAnswer}
+          onchecknextquestion={checkQuestion}
+          onnextquestion={handleChoiceAnswer}
         ></c-single-choice-comp>
       </div>
     </div>
