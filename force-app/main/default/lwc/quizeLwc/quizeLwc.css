@@ -33,8 +33,16 @@
   margin: 0 !important;
 }
 
+.welcome-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 .app {
   height: 100vh !important;
+  max-height: 100vh !important;
+  position: relative;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -49,16 +57,10 @@
   flex-wrap: nowrap;
 }
 
+
 .question-container {
-  margin: 0 auto;
-  max-width: 1200px;
+  z-index: 2;
   text-align: center;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
 }
 
 .question-contents {

@@ -1,0 +1,400 @@
+.unit:nth-child(5n + 1) {
+    --i: 0;
+}
+
+.unit:nth-child(n + 1) {
+    --j: 0;
+}
+
+.unit:nth-child(5n + 2) {
+    --i: 1;
+}
+
+.unit:nth-child(n + 6) {
+    --j: 1;
+}
+
+.unit:nth-child(5n + 3) {
+    --i: 2;
+}
+
+.unit:nth-child(n + 11) {
+    --j: 2;
+}
+
+.unit:nth-child(5n + 4) {
+    --i: 3;
+}
+
+.unit:nth-child(n + 16) {
+    --j: 3;
+}
+
+.unit:nth-child(5n + 5) {
+    --i: 4;
+}
+
+.unit:nth-child(n + 21) {
+    --j: 4;
+}
+
+.side:nth-child(1) {
+    --idx: 0;
+}
+
+.side:nth-child(2) {
+    --idx: 1;
+}
+
+.side:nth-child(3) {
+    --idx: 2;
+}
+
+.front::before,
+.front::after,
+.half::before,
+.half::after,
+.cube::after {
+    transform: rotate3d(var(--vi), var(--vj), 0, calc(var(--s) * 0.5turn)) translatez(var(--z, 1em));
+}
+
+.front::before,
+.front::after,
+.later .side,
+.later::before,
+.later::after,
+.later,
+.half::before,
+.half::after,
+.cube::after {
+    --int: Max(0, calc(var(--sum) - 0.5));
+    --mod: calc(var(--sum) - var(--int));
+    --abs: Max(calc(0.5 - var(--mod)), calc(var(--mod) - 0.5));
+    --k: calc(1 - 2 * var(--abs));
+    color: hsl(200, var(--sat, 75%), calc(63% - var(--k, -0.1) * 50%));
+    background: currentcolor;
+}
+
+@property --d {
+    syntax: '<length>';
+    initial-value: 0px;
+    inherits: true;
+}
+
+@property --p {
+    syntax: '<number>';
+    initial-value: 0;
+    inherits: true;
+}
+
+@property --int {
+    syntax: '<integer>';
+    initial-value: 0;
+    inherits: true;
+}
+
+@property --f {
+    syntax: '<number>';
+    initial-value: 0;
+    inherits: true;
+}
+
+div {
+    display: grid;
+}
+
+
+div {
+    --vi: 0;
+    --vj: calc(1 - var(--vi));
+    transform-style: preserve-3d;
+}
+
+div,
+::before,
+::after {
+    grid-area: 1/1;
+}
+
+.side,
+::before,
+::after {
+    --not-s: calc(1 - var(--s));
+    --sgn-s: calc(2 * var(--s) - 1);
+    backface-visibility: hidden;
+}
+
+.side:nth-child(1),
+::before {
+    --s: 0;
+}
+
+.side:nth-child(3),
+::after {
+    --s: 1;
+}
+
+.welcome-container {
+    height: 100vh;
+    max-height: 100vh;
+    width: 100vw;
+    max-width: 100vw;
+    padding: 20px;
+    opacity: .4;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.a3d {
+    grid-gap: 9em;
+    grid-template: 6em / repeat(var(--n), 6em);
+    place-self: center;
+    transform: rotatex(-41deg) rotatey(-48deg);
+    -webkit-transform: rotatex(-41deg) rotatey(-48deg);
+    -moz-transform: rotatex(-41deg) rotatey(-48deg);
+    -ms-transform: rotatex(-41deg) rotatey(-48deg);
+    -o-transform: rotatex(-41deg) rotatey(-48deg);
+}
+
+.unit {
+    --f: 0.5;
+    --m: calc(0.5 * (var(--n) - 1));
+    grid-area: 1 / calc(var(--i) + 1);
+    transform: translatez(calc((var(--j) - var(--m)) * 15em)) rotatey(calc(var(--p, 0) * 1turn));
+}
+
+.anim {
+    animation: p var(--tr) cubic-bezier(var(--cx),
+            calc(-1 * var(--cx)),
+            calc(1 - var(--cx)),
+            calc(1 + var(--cx))) var(--dt) infinite alternate,
+        osc var(--to) ease-in-out infinite alternate;
+}
+
+@keyframes p {
+
+    0%,
+    25% {
+        --p: 0;
+    }
+
+    75%,
+    100% {
+        --p: 0.5;
+    }
+}
+
+@keyframes osc {
+
+    0%,
+    35% {
+        --d: -3em;
+    }
+
+    65%,
+    100% {
+        --d: 3em;
+    }
+}
+
+.shdw::before {
+    transform: translatey(3.75em) rotatex(90deg);
+    background: radial-gradient(rgba(0, 0, 0, 0.5), transparent);
+    filter: blur(9px);
+    content: '';
+}
+
+.cube {
+    --vi: 1;
+    --sat: 62%;
+    place-self: center;
+    width: 2em;
+    height: 2em;
+    transform: translatez(var(--d));
+}
+
+.cube::after {
+    --s: 0.5;
+    content: '';
+}
+
+.half {
+    --dir: 0;
+    transform: rotatey(calc(var(--dir) * 90deg));
+}
+
+.half:nth-child(2) {
+    --dir: 1;
+}
+
+.half::before,
+.half::after {
+    --sum: calc(var(--p) + 0.5 * var(--s) + 0.25 * var(--dir) + 1);
+    content: '';
+}
+
+.gate {
+    animation: f calc(0.5 * var(--to)) ease-in-out infinite alternate;
+}
+
+.gate::before {
+    align-self: center;
+    height: 1.5em;
+}
+
+@keyframes f {
+
+    0%,
+    35% {
+        --f: 0.35;
+    }
+
+    100% {
+        --f: 0.75;
+    }
+}
+
+.later {
+    --lat-w: 6em;
+    --sgn-e: calc(2 * var(--e) - 1);
+    grid-auto-flow: column;
+    justify-content: center;
+    place-self: center;
+    width: var(--lat-w);
+    height: 1.5em;
+    transform: translatey(calc(-0.5 * var(--sgn-e) * var(--lat-w))) rotatex(90deg);
+}
+
+.later .side,
+.later::before,
+.later::after {
+    --sum: calc(var(--p) + 0.25 + 0.5 * (var(--e) - var(--sgn-e) * var(--s)) + 1);
+    grid-area: initial;
+    width: inherit;
+    transform-origin: calc(var(--not-s) * 100%);
+    transform: rotatey(calc(var(--sgn-s) * var(--sgn-e) * 90deg));
+}
+
+.outer {
+    --e: 1;
+    grid-gap: 6em;
+}
+
+.outer::before,
+.outer::after {
+    content: '';
+}
+
+.front::before,
+.front::after {
+    --z: 0.75em;
+    --sum: calc(var(--p) + var(--s) * 0.5 + 1);
+    border: solid calc(0.5 * (1 - var(--f)) * 6em) currentcolor;
+    background: transparent;
+    content: '';
+}
+
+.inner {
+    --e: 0;
+    --lat-w: calc(var(--f) * 6em);
+}
+
+.side {
+    --sum: calc(var(--p) + 0.25 + 0.5 * var(--s) + 1);
+}
+
+.anim .side:nth-child(2) {
+    overflow: hidden;
+}
+
+.anim .side:nth-child(2)::after {
+    place-self: center;
+    width: 2em;
+    height: 2em;
+    transform: translatey(var(--d));
+    background: radial-gradient(#000, transparent);
+    filter: blur(9px);
+    content: '';
+}
+
+.anim .side::before {
+    margin: 3px 0;
+    background: linear-gradient(45deg, #48bbbc 15%, gainsboro, #48bbbc 85%);
+    animation: glow calc(0.5 * var(--to)) ease-out infinite alternate;
+    content: '';
+}
+
+@keyframes glow {
+
+    0%,
+    35% {
+        opacity: 0;
+    }
+
+    70%,
+    100% {
+        --f: 0.75;
+    }
+}
+
+@media (max-width: 768px) {
+    .a3d {
+        --n: 3;
+    }
+}
+
+@media (max-width: 480px) {
+    .a3d {
+        --n: 2;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .a3d {
+        grid-gap: 6em;
+        grid-template: 4em / repeat(var(--n), 4em);
+    }
+
+    .unit {
+        grid-area: 1 / calc(var(--i) + 1);
+        transform: translatez(calc((var(--j) - var(--m)) * 10em)) rotatey(calc(var(--p, 0) * 1turn));
+    }
+
+    .unit.anim {
+        --tr: 5.89s;
+        --to: 1.32s;
+    }
+
+    body:before,
+    body:after {
+        font-size: 2vmin;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .a3d {
+        grid-gap: 4em;
+        grid-template: 3em / repeat(var(--n), 3em);
+    }
+
+    .unit {
+        grid-area: 1 / calc(var(--i) + 1);
+        transform: translatez(calc((var(--j) - var(--m)) * 6em)) rotatey(calc(var(--p, 0) * 1turn));
+    }
+
+    .unit.anim {
+        --tr: 4.89s;
+        --to: 1.12s;
+    }
+
+    body:before,
+    body:after {
+        font-size: 1.5vmin;
+    }
+}
+
+@media only screen and (max-width: 1096px) {
+    .welcome-container{
+        display: none !important;
+    }
+}

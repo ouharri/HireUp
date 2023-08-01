@@ -25,7 +25,7 @@ export default class MultipleChoiceComp extends LightningElement {
                         })
                     );
                 });
-            setTimeout(() => this.IsClickedNext = false, 500);
+            setTimeout(() => this.IsClickedNext = false, 250);
         });
         this.addEventListener('timeOut', async () => {
             await this.handleEvent();
@@ -113,6 +113,6 @@ export default class MultipleChoiceComp extends LightningElement {
                 this.selectedOptions = [];
                 this.isDisabled = true;
             }
-        }, 500)
+        }, 250)
     }
 }

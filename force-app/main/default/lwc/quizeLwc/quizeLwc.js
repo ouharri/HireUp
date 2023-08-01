@@ -32,6 +32,7 @@ export default class QuizeLwc extends LightningElement {
     timer = null;
     quizId = null;
     LeadId = null;
+    screenWithDesktop = 0;
 
     @track MULTIPLE_CHOICE = false;
     @track SINGLE_CHOICE = false;
@@ -93,7 +94,7 @@ export default class QuizeLwc extends LightningElement {
 
     setAnswerOptions = (value) => {
         return new Promise((resolve) => {
-            this.answerOptions = value;
+            this.answerOptions = this.fisherYatesShuffle(value);
             resolve();
         });
     };
@@ -225,6 +226,15 @@ export default class QuizeLwc extends LightningElement {
         console.error('Token non trouvé dans l\'URL !');
     }
 
+    fisherYatesShuffle(array) {
+        const copyArray = JSON.parse(JSON.stringify(array)); // Create a deep copy
+        for (let i = copyArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [copyArray[i], copyArray[j]] = [copyArray[j], copyArray[i]];
+        }
+        return copyArray;
+    }
+
     countDownTimer() {
         if (this.countDown > 0 && !this.isQlickedNextQuestion) {
             this.timer = setTimeout(() => {
@@ -317,7 +327,7 @@ export default class QuizeLwc extends LightningElement {
                         })
                     );
                     break;
-            } setTimeout(() => resolve(), 500);
+            } setTimeout(() => resolve(), 250);
         });
 
         if (this.currentQuestion >= this.questions.length) {
@@ -401,6 +411,7 @@ export default class QuizeLwc extends LightningElement {
             rgb(255, 255, 255, 0.7),
             rgb(252, 252, 252, 0.7)
         ),url('${quizePatternImage}')`;
+        this.screenWithDesktop = window.screen.width >= 1096;
         this.addEventListener('checknextquestion', async (event) => {
             await this.handleUserResponce(event.detail);
             await this.setIsNotQlickedNextQuestion();

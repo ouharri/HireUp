@@ -70,7 +70,7 @@ export default class SingleChoiceComp extends LightningElement {
                     detail: this.selectedOptions,
                 })
             )
-        }, 500)
+        }, 250)
     }
 
     async renderedCallback() {

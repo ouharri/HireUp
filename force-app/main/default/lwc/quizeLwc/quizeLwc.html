@@ -1,12 +1,24 @@
 <template>
   <div class="app">
+    <div>
+      <c-welcome-page-comp
+        class="welcome-container"
+        if:true={screenWithDesktop}
+      ></c-welcome-page-comp>
+      <!-- <div class="question-container" if:false={isQuizStarted}>
+        <div class="question-contents" style={imageBgLink}>
+          hello
+        </div>
+      </div> -->
+    </div>
+
     <c-start-quiz-comp
       quiz={quiz}
       onstartquiz={startQuiz}
       if:false={isQuizStarted}
     ></c-start-quiz-comp>
 
-    <div class="question_container" if:true={isQuizStarted}>
+    <div class="question-container" if:true={isQuizStarted}>
       <div class="question-contents" style={imageBgLink}>
         <div
           class="grid grid-rows-6 grid-cols-1 text-gray-600 mx-auto w-11/12 md:w-8/12 lg:w-7/12 overflow-y-hidden custom-height"
