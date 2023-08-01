@@ -40,7 +40,7 @@ export default class SingleChoiceComp extends LightningElement {
 
     async handleEvent() {
         return new Promise((resolve) => {
-            this.dispatchEvent(new CustomEvent('clicked-next'));
+            this.dispatchEvent(new CustomEvent('cleartimeout'));
             const event = new CustomEvent('iscklickednext', {
                 bubbles: true,
                 composed: true,
@@ -64,14 +64,13 @@ export default class SingleChoiceComp extends LightningElement {
             )
         );
         await this.handleEvent();
-        console.log('selected', this.selectedOptions);
         setTimeout(() => {
             this.dispatchEvent(
                 new CustomEvent('nextquestion', {
                     detail: this.selectedOptions,
                 })
             )
-        }, 1000)
+        }, 500)
     }
 
     async renderedCallback() {

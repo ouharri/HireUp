@@ -235,7 +235,6 @@ export default class QuizeLwc extends LightningElement {
 
             switch (this.question.QuestionType__c) {
                 case this.QUESTION_TYPES.MULTIPLE_CHOICE:
-                    console.log('time out');
                     this.template.querySelector('c-multiple-choice-comp').dispatchEvent(
                         new CustomEvent('timeOut', {
                             bubbles: true,
@@ -244,7 +243,6 @@ export default class QuizeLwc extends LightningElement {
                     );
                     break;
                 case this.QUESTION_TYPES.SINGLE_CHOICE:
-                    console.log('single choice');
                     this.template.querySelector('c-single-choice-comp').dispatchEvent(
                         new CustomEvent('timeOut', {
                             bubbles: true,
@@ -301,31 +299,26 @@ export default class QuizeLwc extends LightningElement {
 
     async handleNextQuestion() {
         // clearTimeout(this.timer);
-
-        switch (this.question.QuestionType__c) {
-            case this.QUESTION_TYPES.MULTIPLE_CHOICE:
-                await new Promise((resolve) => {
+        await new Promise((resolve) => {
+            switch (this.question.QuestionType__c) {
+                case this.QUESTION_TYPES.MULTIPLE_CHOICE:
                     this.template.querySelector('c-multiple-choice-comp').dispatchEvent(
                         new CustomEvent('iscklickednextquestion', {
                             bubbles: true,
                             composed: true,
                         })
                     );
-                    setTimeout(() => resolve(), 1000); // Wait for 1 second
-                });
-                break;
-            case this.QUESTION_TYPES.SINGLE_CHOICE:
-                await new Promise((resolve) => {
+                    break;
+                case this.QUESTION_TYPES.SINGLE_CHOICE:
                     this.template.querySelector('c-single-choice-comp').dispatchEvent(
                         new CustomEvent('iscklickednextquestion', {
                             bubbles: true,
                             composed: true,
                         })
                     );
-                    setTimeout(() => resolve(), 1000); // Wait for 1 second
-                });
-                break;
-        }
+                    break;
+            } setTimeout(() => resolve(), 500);
+        });
 
         if (this.currentQuestion >= this.questions.length) {
             this.handleQuizEnd();
@@ -370,14 +363,8 @@ export default class QuizeLwc extends LightningElement {
         }
     }
 
-    handleClickedAnswer(event) {
-        const selectedAnswer = event.detail.Answer;
-        console.log(selectedAnswer.OptionText, selectedAnswer.OptionId);
-    }
-
     async handleChoiceAnswer(event) {
         const selectedAnswerOption = event.detail;
-        console.log('test ets ', selectedAnswerOption);
 
         await this.handleUserResponce(selectedAnswerOption);
 
@@ -387,7 +374,6 @@ export default class QuizeLwc extends LightningElement {
     }
 
     async handleUserResponce(selectedAnswerOption = []) {
-        console.log('test ets ', selectedAnswerOption);
         await this.setIsQlickedNextQuestion();
 
         this.questions[this.currentQuestion - 1].statutClass =
@@ -405,19 +391,19 @@ export default class QuizeLwc extends LightningElement {
         await this.handleUserResponce(e.detail);
     }
 
+    clearTimer() {
+        clearTimeout(this.timer);
+    }
+
     connectedCallback() {
         this.imageBgLink = `background-image: linear-gradient(
             to left top,
             rgb(255, 255, 255, 0.7),
             rgb(252, 252, 252, 0.7)
         ),url('${quizePatternImage}')`;
-        // this.addEventListener('checknextquestion', async (event) => {
-        //     console.log('time out 5');
-        //     await this.handleUserResponce(event.detail);
-        //     await this.setIsNotQlickedNextQuestion();
-        // });
-        this.addEventListener('clicked-next', () => {
-            clearTimeout(this.timer);
+        this.addEventListener('checknextquestion', async (event) => {
+            await this.handleUserResponce(event.detail);
+            await this.setIsNotQlickedNextQuestion();
         });
     }
 }
