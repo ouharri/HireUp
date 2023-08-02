@@ -15,7 +15,6 @@ export default class MultipleChoiceComp extends LightningElement {
     connectedCallback() {
         this.addEventListener('iscklickednextquestion', (event) => {
             this.IsClickedNext = true;
-            console.log('ggg');
             this.template.querySelectorAll('c-multiple-question-option-comp')
                 ?.forEach((element) => {
                     element.dispatchEvent(
@@ -28,6 +27,7 @@ export default class MultipleChoiceComp extends LightningElement {
             setTimeout(() => this.IsClickedNext = false, 250);
         });
         this.addEventListener('timeOut', async () => {
+            this.IsClickedNext = true;
             await this.handleEvent();
             this.dispatchEvent(
                 new CustomEvent('checknextquestion', {
@@ -36,7 +36,12 @@ export default class MultipleChoiceComp extends LightningElement {
             );
             this.selectedOptions = [];
             this.isDisabled = true;
+            setTimeout(() => this.IsClickedNext = false, 1000);
         });
+    }
+
+    disconnectedCallback() {
+        this.IsClickedNext = false;
     }
 
     async renderedCallback() {

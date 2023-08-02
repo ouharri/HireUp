@@ -67,6 +67,11 @@
   transition: all 0.7s ease 0s;
 }
 
+.landingPage-text button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
 .landingPage-text button:hover {
   background-color: #6c757d;
 }

@@ -10,12 +10,15 @@
           Welcome! We present you with a series of questions along with options
           or input fields to provide your answers. You have a limited time to
           respond to each question, after which you will be automatically
-          directed to the next question. You have a total of {quiz.Duration__c} Second for the
-          entire quiz. {quiz.Description__c} . At the end of the quiz,
-          your total score will be calculated and displayed. Good luck! Test
-          your knowledge and skills!
+          directed to the next question. You have a total of {quiz.Duration__c}
+          Second for the entire quiz. {quiz.Description__c} . At the end of the
+          quiz, your total score will be calculated and displayed. Good luck!
+          Test your knowledge and skills!
         </p>
-        <button onclick={startQuize}>Start Quiz</button>
+        <div class="flex gap-2 justify-center items-center">
+          <button onclick={startQuize} disabled={notready}>Start Quiz</button>
+          <c-loader if:true={notready}></c-loader>
+        </div>
       </div>
     </div>
   </div>

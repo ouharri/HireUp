@@ -1,0 +1,24 @@
+<template>
+  <div class="row-span-3">
+    <div class="min-h-full flex flex-col justify-center">
+      <div class="grid grid-cols-1 gap-3 md:gap-6 md:grid-cols-2 mt-8 mb-6">
+        <c-single-question-option-comp
+          for:each={options}
+          for:item="item"
+          key={item.Id}
+          option={item}
+          answer={answer}
+          onclickedoption={handleAnswer}
+        >
+        </c-single-question-option-comp>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
+        <div></div>
+        <div class="next-container btn">
+          <div class="before-next-btn"></div>
+          <c-loader if:true={isClickedNext}></c-loader>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

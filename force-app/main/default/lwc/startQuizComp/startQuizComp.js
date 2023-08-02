@@ -9,6 +9,7 @@ export default class StartQuizComp extends LightningElement {
     @track imageBgLink;
 
     @api quiz;
+    @api notready = false;
 
     connectedCallback() {
         this.imageLink = staticResourceName;

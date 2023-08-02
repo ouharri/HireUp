@@ -4,10 +4,9 @@ import flowbitecss from '@salesforce/resourceUrl/flowbitecss';
 import { loadStyle, loadScript } from 'lightning/platformResourceLoader';
 import getAnsswer from '@salesforce/apex/QuizController.getAnsswer';
 
-
-export default class SingleChoiceComp extends LightningElement {
-
+export default class TrueFalseComp extends LightningElement {
     @api options;
+
     @api question;
     @track isClickedNext = false;
     @track answer = '';

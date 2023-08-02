@@ -3,11 +3,28 @@
     <div>
       <c-welcome-page-comp
         class="welcome-container"
-        if:true={screenWithDesktop}
+        if:true={showAnimationIntro}
       ></c-welcome-page-comp>
-      <!-- <div class="question-container" if:false={isQuizStarted}>
+      <!-- <div class="question-container">
         <div class="question-contents" style={imageBgLink}>
-          hello
+          <div class="row-span-3">
+            <div class="min-h-full flex flex-col justify-center">
+              <div
+                class="grid grid-cols-1 gap-3 md:gap-6 md:grid-cols-2 mt-8 mb-6"
+              >
+                <div class="flex">
+                  <p>Hello outman</p>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
+                <div></div>
+                <div class="next-container btn">
+                  <div class="before-next-btn"></div>
+                  <c-loader></c-loader>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div> -->
     </div>
@@ -16,9 +33,13 @@
       quiz={quiz}
       onstartquiz={startQuiz}
       if:false={isQuizStarted}
+      notready={isNotReadyStartQuiz}
     ></c-start-quiz-comp>
 
-    <div class="question-container" if:true={isQuizStarted}>
+    <div
+      class="question-container"
+      if:true={isQuizStarted}
+    >
       <div class="question-contents" style={imageBgLink}>
         <div
           class="grid grid-rows-6 grid-cols-1 text-gray-600 mx-auto w-11/12 md:w-8/12 lg:w-7/12 overflow-y-hidden custom-height"
@@ -42,12 +63,19 @@
         <p class="question-no">
           Question { currentQuestion } of { questions.length }
         </p>
-        <h3 class={timerClass}>
-          {countDown}
-        </h3>
-        <p class="question">
-          { question.QuestionText__c }
-        </p>
+        <div>
+          <c-timer-comp
+            formattedtime={countDown}
+            dasharray={dashArray}
+            remainingpathcolor={remainingPathColor}
+            class="timerClass"
+          ></c-timer-comp>
+          <div class="question-text-container bg-blue-100 rounded-lg">
+            <p class="question">
+              { question.QuestionText__c }
+            </p>
+          </div>
+        </div>
 
         <c-multiple-choice-comp
           if:true={MULTIPLE_CHOICE}
@@ -65,6 +93,14 @@
           onnextquestion={handleChoiceAnswer}
           oncleartimeout={clearTimer}
         ></c-single-choice-comp>
+        <c-true-false-comp
+          if:true={TRUE_FALSE}
+          options={answerOptions}
+          question={question.Id}
+          onchecknextquestion={checkQuestion}
+          onnextquestion={handleChoiceAnswer}
+          oncleartimeout={clearTimer}
+        ></c-true-false-comp>
       </div>
     </div>
   </div>

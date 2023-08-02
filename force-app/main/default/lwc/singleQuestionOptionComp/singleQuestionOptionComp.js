@@ -18,7 +18,7 @@ export default class SingleQuestionOptionComp extends LightningElement {
     handleCorrectAnswer() {
         this.optionClassName = 'bg-red-400';
         this.answer.map((a) => {
-            if (a.AnswerOption__c === this.option.Id) {
+            if ((a.AnswerOption__c || a.AnswerText__c) === this.option.Id) {
                 this.optionClassName = 'bg-green-400';
                 return;
             }
