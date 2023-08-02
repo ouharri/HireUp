@@ -15,7 +15,7 @@
 }
 
 .base-timer__path-elapsed {
-    stroke-width: 7px;
+    stroke-width: 8px;
     stroke: grey;
 }
 
@@ -57,4 +57,5 @@
     border-radius: 50%;
     background: white;
     z-index: -1;
+    /* border: 8px solid rgb(118, 118, 118); */
 }

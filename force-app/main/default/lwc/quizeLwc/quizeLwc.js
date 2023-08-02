@@ -90,6 +90,7 @@ export default class QuizeLwc extends LightningElement {
     @track PUZZLE = false;
     @track SURVEY = false;
 
+
     QUESTION_TYPES = {
         MULTIPLE_CHOICE: 'multiple choice',
         SINGLE_CHOICE: 'single choice',
@@ -97,7 +98,9 @@ export default class QuizeLwc extends LightningElement {
         SHORT_ANSWER: 'short answer',
         CURSOR: 'Cursor',
         PUZZLE: 'Puzzle',
-        SURVEY: 'Sondage'
+        SURVEY: 'Sondage',
+        PROBLEM_SOLVING: 'problem solving'
+
     };
 
     createAnswerWrapper(answerOptionText, questionId) {
@@ -314,6 +317,7 @@ export default class QuizeLwc extends LightningElement {
                 this.countDownTimer();
             }, 1000);
         } else if (this.countDown === 0) {
+            this.setDefaultTimer();
             await new Promise((resolve) => {
                 switch (this.question.QuestionType__c) {
                     case this.QUESTION_TYPES.MULTIPLE_CHOICE:
@@ -348,10 +352,13 @@ export default class QuizeLwc extends LightningElement {
         }
     }
 
-    setDefaultTimer() {
-        this.dashArray = '283';
-        this.timePassed = 0;
-        this.remainingPathColor = 'base-timer__path-remaining ' + COLOR_CODES.info.color;
+    async setDefaultTimer() {
+        return new Promise((resolve) => {
+            this.dashArray = '283';
+            this.timePassed = 0;
+            this.remainingPathColor = 'base-timer__path-remaining ' + COLOR_CODES.info.color;
+            resolve();
+        });
     }
 
     async handleNextQuestion() {
@@ -379,7 +386,7 @@ export default class QuizeLwc extends LightningElement {
             if (this.currentQuestion >= this.questions.length) {
                 this.handleQuizEnd();
             } else {
-                this.dashArray = '283';
+                await this.setDefaultTimer();
                 await this.setIsNotClickedNextQuestion();
                 await this.incrementCurrentQuestion();
                 await this.setQuestion(this.questions[this.currentQuestion - 1].question);
