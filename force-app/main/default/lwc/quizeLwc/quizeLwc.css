@@ -59,7 +59,6 @@
 .question-container {
   z-index: 2;
   position: relative;
-  text-align: center;
   opacity: 0;
   transform: translateX(-100%);
   animation: slideInFromLeft 0.5s ease-in-out forwards;
@@ -75,7 +74,6 @@
   border-radius: 15px;
   color: #090909;
   box-shadow: 10px 10px 42px 0px rgba(0, 0, 0, 0.2);
-  text-align: center;
 }
 
 .question-no {
@@ -98,6 +96,10 @@
   text-align: center;
   line-height: 1.4;
   padding: 0 20px;
+}
+
+.center-container {
+  text-align: center;
 }
 
 .timerClass {
@@ -151,7 +153,7 @@
     -moz-transform: translateX(100%);
     -ms-transform: translateX(100%);
     -o-transform: translateX(100%);
-}
+  }
 
   100% {
     opacity: 1;

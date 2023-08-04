@@ -1,0 +1,94 @@
+.container {
+    width: 100%;
+    max-height: 65vh;
+    margin-top: 35px;
+}
+
+.code-editor {
+    height: 100%;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+}
+
+.language-select {
+    width: 20%;
+}
+
+.editor {
+    height: auto;
+    max-width: 100%;
+}
+
+.button-container {
+    width: 100%;
+}
+
+.output-panel {
+    width: 65%;
+    height: 100%;
+    border-radius: 11px;
+    width: 65%;
+    height: 100%;
+    border-radius: 11px;
+}
+
+.run-button,
+.submit-button {
+    width: 47%;
+    height: 100%;
+    border: 2px solid gray;
+    border-radius: 5px;
+    background-color: white;
+    font-size: 14px;
+    padding: 10px 20px;
+    margin-right: 10px;
+}
+
+.run-button:hover,
+.submit-button:hover {
+    background-color: lightgray;
+}
+
+.button_Box button.submit_code_btn {
+    box-shadow: 0.03rem 0.06rem 0.1rem #09090908;
+    cursor: pointer;
+    color: #fff;
+    font-size: 18px;
+    width: 70%;
+    font-weight: 600;
+    padding: 13px;
+    margin: 13px auto 0 auto;
+    border-radius: 5px;
+    border: none;
+    text-align: center;
+    outline: none;
+}
+
+.button_Box .submit_code_btn {
+    background-color: #4aaaac7d;
+}
+
+.button_Box .submit_code_btn:hover {
+    background-color: #4aaaacda;
+}
+
+/* media-queries */
+@media (max-width: 960px) {
+    .button_Box button.submit_code_btn {
+        width: 80%;
+    }
+}
+
+@media (max-width: 767px) {
+    .button_Box button.submit_code_btn {
+        font-size: 17px;
+        width: 85%;
+    }
+}
+
+@media (max-width: 500px) {
+    .button_Box button.submit_code_btn {
+        width: 90%;
+    }
+}

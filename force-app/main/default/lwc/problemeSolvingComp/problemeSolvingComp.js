@@ -3,6 +3,8 @@ import { LightningElement, api } from 'lwc';
 import flowbitejs from '@salesforce/resourceUrl/flowbitejs';
 import flowbitecss from '@salesforce/resourceUrl/flowbitecss';
 import { loadStyle, loadScript } from 'lightning/platformResourceLoader';
+import quizePatternImage from '@salesforce/resourceUrl/quizePatternImage';
+
 
 const url = 'https://online-code-compiler.p.rapidapi.com/v1/languages/';
 const options = {
@@ -15,6 +17,8 @@ const options = {
 
 export default class ProblemeSolvingComp extends LightningElement {
     @api language;
+    imageBgLink;
+    questions = ['', '', '', '', '', '', '', '', '', ''];
 
     renderedCallback() {
         Promise.all([
@@ -31,7 +35,12 @@ export default class ProblemeSolvingComp extends LightningElement {
     }
 
     connectedCallback() {
-        this.getLanguage();
+        // this.getLanguage();
+        this.imageBgLink = `background-image: linear-gradient(
+            to left top,
+            rgb(255, 255, 255, 0.7),
+            rgb(252, 252, 252, 0.7)
+        ),url('${quizePatternImage}')`;
     }
 
 
