@@ -6,7 +6,7 @@ import { loadStyle, loadScript } from 'lightning/platformResourceLoader';
 import quizePatternImage from '@salesforce/resourceUrl/quizePatternImage';
 
 
-const url = 'https://online-code-compiler.p.rapidapi.com/v1/languages/';
+const url = 'https://online-code-compiler.p.rapidapi.com/v1/';
 const options = {
     method: 'GET',
     headers: {
@@ -46,7 +46,7 @@ export default class ProblemeSolvingComp extends LightningElement {
 
     async getLanguage() {
         try {
-            const response = await fetch(url, options);
+            const response = await fetch(url + 'languages/', options);
             const result = await response.text();
             console.log(result);
         } catch (error) {
@@ -54,5 +54,5 @@ export default class ProblemeSolvingComp extends LightningElement {
         }
     }
 
-
+   
 }

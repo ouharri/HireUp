@@ -1,10 +1,10 @@
 <template>
   <div class="app">
     <div>
-      <!-- <c-welcome-page-comp
+      <c-welcome-page-comp
         class="welcome-container"
         if:true={showAnimationIntro}
-      ></c-welcome-page-comp> -->
+      ></c-welcome-page-comp>
 
       <!-- <div class="question-container">
         <div class="question-contents" style={imageBgLink}>
@@ -30,17 +30,25 @@
       </div> -->
     </div>
 
-    <!-- <c-start-quiz-comp
+    <c-start-quiz-comp
       quiz={quiz}
       onstartquiz={startQuiz}
       if:false={isQuizStarted}
       notready={isNotReadyStartQuiz}
-    ></c-start-quiz-comp> -->
+    ></c-start-quiz-comp>
 
-    <div class="question-container" style="max-height: 90vh; margin-top: 0;">
-      <div class="question-contents" style="width: 90% !important;">
+    <div
+      class="question-container"
+      if:true={isQuizStarted}
+      style="max-height: 90vh; margin-top: 0;"
+    >
+      <div
+        class="question-contents"
+        if:false={PROBLEM_SOLVING}
+        style={imageBgLink}
+      >
         <div
-          class="center-container grid grid-rows-6 grid-cols-1 text-gray-600 mx-auto w-11/12 md:w-8/12 lg:w-7/12 overflow-y-hidden custom-height"
+          class="grid grid-rows-6 grid-cols-1 text-gray-600 mx-auto w-11/12 md:w-8/12 lg:w-7/12 overflow-y-hidden custom-height"
         >
           <div class="row-span-2">
             <div
@@ -61,81 +69,6 @@
         </div>
 
         <p class="question-no center-container">
-          <!-- Question { currentQuestion } of { questions.length } -->
-          quest 1 of 10
-        </p>
-        <div class="lg:flex flex-row justify-center items-center w-full">
-          <!-- 1 -->
-          <div class="flex-1">
-            <c-timer-comp
-              formattedtime="10"
-              dasharray="100"
-              remainingpathcolor="base-timer__path-remaining  green"
-              class="timerClass"
-            ></c-timer-comp>
-            <div
-              class="question-text-container bg-blue-100 rounded-lg"
-              style="
-                max-height: 65vh;
-                overflow-y: auto;
-                margin: 0 5% !important;
-              "
-            >
-              <p class="question">
-                <!-- { question.QuestionText__c } -->Welcome! We present you
-                with a series of questions along with options or input fields to
-                provide your answers. You have a limited time to respond to each
-                question, after which you will be automatically directed to the
-                next question. You have a total of {quiz.Duration__c} Second for
-                the entire quiz. {quiz.Description__c} . At the end of the quiz,
-                your total score will be calculated and displayed. Good luck!
-                Test your knowledge and skills!
-              </p>
-            </div>
-          </div>
-
-          <!-- 2 -->
-          <c-code-editor-comp
-            class="flex flex-col items-center gap-4 flex-1"
-            style="
-              margin: 0px 5%;
-              max-height: 65vh;
-              margin-top: 35px !important;
-            "
-          >
-          </c-code-editor-comp>
-        </div>
-      </div>
-    </div>
-    <!-- 
-    <c-probleme-solving-comp class="question-container">
-    </c-probleme-solving-comp> -->
-
-    <!-- <div
-      class="question-container"
-      if:true={isQuizStarted}
-    >
-      <div class="question-contents" style={imageBgLink}>
-        <div
-          class="grid grid-rows-6 grid-cols-1 text-gray-600 mx-auto w-11/12 md:w-8/12 lg:w-7/12 overflow-y-hidden custom-height"
-        >
-          <div class="row-span-2">
-            <div
-              class="min-h-full items-center justify-between py-4 rounded-lg flex flex-col items-center"
-            >
-              <div class="flex my-4 gap-2 mb-[2rem !important]">
-                <div
-                  for:each={questions}
-                  for:item="q"
-                  key={q.Id}
-                  class={q.statutClass}
-                ></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <p class="question-no">
           Question { currentQuestion } of { questions.length }
         </p>
         <div>
@@ -161,6 +94,7 @@
           oncleartimeout={clearTimer}
         ></c-multiple-choice-comp>
         <c-single-choice-comp
+          class="center-container"
           if:true={SINGLE_CHOICE}
           options={answerOptions}
           question={question.Id}
@@ -169,6 +103,7 @@
           oncleartimeout={clearTimer}
         ></c-single-choice-comp>
         <c-true-false-comp
+          class="center-container"
           if:true={TRUE_FALSE}
           options={answerOptions}
           question={question.Id}
@@ -176,6 +111,131 @@
           onnextquestion={handleChoiceAnswer}
           oncleartimeout={clearTimer}
         ></c-true-false-comp>
+      </div>
+
+      <div
+        class="question-contents problem-solving"
+        if:true={PROBLEM_SOLVING}
+        style={imageBgLink}
+      >
+        <div
+          class="center-container grid grid-rows-6 grid-cols-1 text-gray-600 mx-auto w-11/12 md:w-8/12 lg:w-7/12 overflow-y-hidden custom-height"
+        >
+          <div class="row-span-2">
+            <div
+              class="min-h-full items-center justify-between py-4 rounded-lg flex flex-col"
+            >
+              <div
+                class="flex my-4 gap-2 mb-[2rem !important] center-container"
+              >
+                <div
+                  for:each={questions}
+                  for:item="q"
+                  key={q.Id}
+                  class={q.statutClass}
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="question-no center-container">
+          Question { currentQuestion } of { questions.length }
+        </p>
+        <div class="lg:flex flex-row justify-center items-center w-full">
+          <div class="flex-1">
+            <c-timer-comp
+              formattedtime={countDown}
+              dasharray={dashArray}
+              remainingpathcolor={remainingPathColor}
+              class="timerClass"
+            ></c-timer-comp>
+            <div
+              class="question-text-container bg-blue-100 rounded-lg"
+              style="
+                max-height: 65vh;
+                overflow-y: auto;
+                margin: 0 5% !important;
+              "
+            >
+              <p class="question">
+                { question.QuestionText__c }
+              </p>
+            </div>
+          </div>
+
+          <c-code-editor-comp
+            class="flex flex-col items-center gap-4 flex-1 editor"
+            questionattribute={questionAttributes}
+            style="
+              margin: 0px 5%;
+              max-height: 65vh;
+              margin-top: 35px !important;
+            "
+          >
+          </c-code-editor-comp>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="question-container" style="max-height: 90vh; margin-top: 0;">
+      <div class="question-contents w-[90vw]" style={imageBgLink}>
+        <div
+          class="center-container grid grid-rows-6 grid-cols-1 text-gray-600 mx-auto w-11/12 md:w-8/12 lg:w-7/12 overflow-y-hidden custom-height"
+        >
+          <div class="row-span-2">
+            <div
+              class="min-h-full items-center justify-between py-4 rounded-lg flex flex-col"
+            >
+              <div
+                class="flex my-4 gap-2 mb-[2rem !important] center-container"
+              >
+                <div
+                  for:each={questions}
+                  for:item="q"
+                  key={q.Id}
+                  class={q.statutClass}
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="question-no center-container">
+          Question { currentQuestion } of { questions.length }
+        </p>
+        <div class="lg:flex flex-row justify-center items-center w-full">
+          <div class="flex-1">
+            <c-timer-comp
+              formattedtime={countDown}
+              dasharray={dashArray}
+              remainingpathcolor={remainingPathColor}
+              class="timerClass"
+            ></c-timer-comp>
+            <div
+              class="question-text-container bg-blue-100 rounded-lg"
+              style="
+                max-height: 65vh;
+                overflow-y: auto;
+                margin: 0 5% !important;
+              "
+            >
+              <p class="question">
+                { question.QuestionText__c }
+              </p>
+            </div>
+          </div>
+
+          <c-code-editor-comp
+            class="flex flex-col items-center gap-4 flex-1 editor"
+            style="
+              margin: 0px 5%;
+              max-height: 65vh;
+              margin-top: 35px !important;
+            "
+          >
+          </c-code-editor-comp>
+        </div>
       </div>
     </div> -->
   </div>

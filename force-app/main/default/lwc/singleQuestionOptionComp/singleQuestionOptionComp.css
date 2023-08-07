@@ -17,11 +17,9 @@
 	background-color: #4aaaac7d;
 }
 
-
 .options .selected:hover {
 	background-color: #4aaaacda;
 }
-
 
 /* media-queries */
 @media (max-width: 960px) {
