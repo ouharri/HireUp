@@ -37,69 +37,38 @@ export default class CodeEditorComp extends LightningElement {
     }
 
     async runCode() {
-        // const options_post = {
-        //     method: 'POST',
-        //     headers: {
-        //         'content-type': 'application/json',
-        //         'X-RapidAPI-Key': '50c8283de5msh9a363fa31f44eb7p1a0ad7jsn55c4b7c0c636',
-        //         'X-RapidAPI-Host': 'online-code-compiler.p.rapidapi.com'
-        //     },
-        //     body: JSON.stringify({
-        //         language: this.language.text,
-        //         version: 'latest',
-        //         code: this.editor.getValue(),
-        //         input: `6
-        //         1 2 3 4 10 11
-        //         `,
-        //     })
-        // };
+        const options_post = {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+                'X-RapidAPI-Key': '50c8283de5msh9a363fa31f44eb7p1a0ad7jsn55c4b7c0c636',
+                'X-RapidAPI-Host': 'online-code-compiler.p.rapidapi.com'
+            },
+            body: JSON.stringify({
+                language: this.language,
+                version: 'latest',
+                code: this.editor.getValue(),
+                input: null
+            })
+        };
 
-        // try {
-        //     const response = await fetch('https://online-code-compiler.p.rapidapi.com/v1/', options_post);
-        //     const result = await response.text();
-        //     console.log(
-        //         JSON.parse(result).output
-        //     );
-        // } catch (error) {
-        //     console.error(error);
-        // }
-
-
-    }
-
-    async autoEditorFullScreen() {
-        await Promise.all([
-            this.editor.setOption("fullScreen", !this.isFullScreenEditor),
-            this.isFullScreenEditor = !this.isFullScreenEditor,
-            this.editor.refresh(),
-        ]).then(() => {
-            this.dispatchEvent(
-                new CustomEvent('fullscreentimer', {
-                    detail: this.isFullScreenEditor
-                })
+        try {
+            const response = await fetch('https://online-code-compiler.p.rapidapi.com/v1/', options_post);
+            const result = await response.text();
+            console.log(
+                JSON.parse(result).output
             );
-        });
-        if (this.isFullScreenEditor) {
-            this.fullScreenButton = 'fullScreenButton cursor-pointer fullScreenButtonClass';
-        } else {
-            this.fullScreenButton = 'cursor-pointer fullScreenButton';
+        } catch (error) {
+            console.error(error);
         }
+        this.isFullScreenEditor = !this.isFullScreenEditor;
     }
 
     async setlanguagevalue(event) {
         this.editorInitialized = false;
         await Promise.all([
-            this.language = {
-                value: event.target.value,
-                text: event.target.options[event.target.selectedIndex].text
-            },
-            this.editor.setOption("mode", (this.language.text === 'nodejs' && 'javascript') || (this.language.text === 'java' && 'text/x-java') || this.language.text),
-            this.editor.setValue(this.convertToPlain(
-                this.questionattribute.codeInit
-                    .filter((item) => item.Language__c === this.language.value)
-                    .map((item) => item.codeText__c)[0]
-            )),
-            this.editor.refresh(),
+            this.language = event.target.value,
+            this.editorInitialized = false
         ]).then(() => {
             this.editorInitialized = true;
         });
@@ -181,7 +150,8 @@ export default class CodeEditorComp extends LightningElement {
                 autoCloseBrackets: true,
                 matchBrackets: true,
                 viewportMargin: 10,
-                mode: (this.language.text === 'nodejs' && 'javascript') || (this.language.text === 'java' && 'text/x-java') || this.language.text,
+                mode: 'javascript',
+                commentRange: true,
                 autoIndentRange: true,
                 autoFormatRange: true,
                 matchTags: { bothTags: true },
