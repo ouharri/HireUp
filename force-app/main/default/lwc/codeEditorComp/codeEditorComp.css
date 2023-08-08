@@ -127,6 +127,9 @@
     height: 2.5px !important;
 }
 
+.CodeMirror-fullscreen{
+    z-index: 99 !important;
+}
 /* media-queries */
 @media (max-width: 960px) {
     .button_Box button.submit_code_btn {

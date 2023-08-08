@@ -506,13 +506,13 @@ export default class QuizeLwc extends LightningElement {
 
     handleFullScreenTimer(e) {
         if (e.detail) {
-            this.timerFullScreenClass = (window.screen.width <= 526) ? 'timerFullScreenMobileClass' : 'timerFullScreenClass';
             this.isEditorFullScreen = true;
             this.appClass = 'appFullScreen';
+            this.timerFullScreenClass = (window.screen.width <= 526) ? 'timerFullScreenMobileClass' : 'timerFullScreenClass';
         } else {
             this.isEditorFullScreen = false;
-            this.timerFullScreenClass = 'timerClass';
             this.appClass = 'app';
+            this.timerFullScreenClass = 'timerClass';
         }
     }
 

@@ -69,21 +69,22 @@ export default class CodeEditorComp extends LightningElement {
 
     async autoEditorFullScreen() {
         await Promise.all([
-            this.editor.setOption("fullScreen", !this.isFullScreenEditor),
-            this.isFullScreenEditor = !this.isFullScreenEditor,
-            // this.editor.refresh(),
-        ]).then(() => {
             this.dispatchEvent(
                 new CustomEvent('fullscreentimer', {
-                    detail: this.isFullScreenEditor
+                    detail: !this.isFullScreenEditor
                 })
-            );
+            ),
+            this.isFullScreenEditor = !this.isFullScreenEditor
+        ])
+        await Promise.all([
+            this.editor.setOption("fullScreen", this.isFullScreenEditor),
+        ]).then(() => {
+            if (this.isFullScreenEditor) {
+                this.fullScreenButton = 'fullScreenButton cursor-pointer fullScreenButtonClass';
+            } else {
+                this.fullScreenButton = 'cursor-pointer fullScreenButton';
+            }
         });
-        if (this.isFullScreenEditor) {
-            this.fullScreenButton = 'fullScreenButton cursor-pointer fullScreenButtonClass';
-        } else {
-            this.fullScreenButton = 'cursor-pointer fullScreenButton';
-        }
     }
 
     async setlanguagevalue(event) {
@@ -373,18 +374,22 @@ export default class CodeEditorComp extends LightningElement {
     }
 
     connectedCallback() {
+        this.language = {
+            value: this.questionattribute?.language[0]?.Id || 'javascript',
+            text: this.questionattribute?.language[0]?.LanguageName__c || 'javascript'
+        };
         this.loadEditorResources();
     }
 
     renderedCallback() {
-        let select = this.template.querySelector('[name="languageSelect"]');
-        if (select) {
-            this.language = {
-                value: select.options[select.selectedIndex].value,
-                text: select.options[select.selectedIndex].text
-            };
-            this.loadEditorResources();
-        }
+        // let select = this.template.querySelector('[name="languageSelect"]');
+        // if (select) {
+        //     this.language = {
+        //         value: select.options[select.selectedIndex].value,
+        //         text: select.options[select.selectedIndex].text
+        //     };
+        //     this.loadEditorResources();
+        // }
     }
 
     disconnectedCallback() {
