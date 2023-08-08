@@ -1,0 +1,17 @@
+{
+  "status": 0,
+  "result": [
+    {
+      "createdById": "0058e000002JWfxAAG",
+      "createdByName": "Automated Process",
+      "createdDate": "2023-07-20T15:17:11.000Z",
+      "fileName": "appointmentSchedulingPolicies/default_appointment_scheduling_policy.policy",
+      "fullName": "default_appointment_scheduling_policy",
+      "id": "0Vr8e0000004E3qCAE",
+      "lastModifiedById": "0058e000002JWfxAAG",
+      "lastModifiedByName": "Automated Process",
+      "lastModifiedDate": "2023-07-20T15:17:11.000Z",
+      "type": "AppointmentSchedulingPolicy"
+    }
+  ]
+}

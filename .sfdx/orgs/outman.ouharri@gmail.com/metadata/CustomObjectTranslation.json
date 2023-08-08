@@ -1,0 +1,122 @@
+{
+  "status": 0,
+  "result": [
+    {
+      "createdById": "0058e000002FRe5AAG",
+      "createdByName": "OUTMAN OUHARRI",
+      "createdDate": "1970-01-01T00:00:00.000Z",
+      "fileName": "objectTranslations/AnswerOption__c-fr.objectTranslation",
+      "fullName": "AnswerOption__c-fr",
+      "id": "",
+      "lastModifiedById": "0058e000002FRe5AAG",
+      "lastModifiedByName": "OUTMAN OUHARRI",
+      "lastModifiedDate": "1970-01-01T00:00:00.000Z",
+      "namespacePrefix": "",
+      "type": "CustomObjectTranslation"
+    },
+    {
+      "createdById": "0058e000002FRe5AAG",
+      "createdByName": "OUTMAN OUHARRI",
+      "createdDate": "1970-01-01T00:00:00.000Z",
+      "fileName": "objectTranslations/QuestionQuiz__c-fr.objectTranslation",
+      "fullName": "QuestionQuiz__c-fr",
+      "id": "",
+      "lastModifiedById": "0058e000002FRe5AAG",
+      "lastModifiedByName": "OUTMAN OUHARRI",
+      "lastModifiedDate": "1970-01-01T00:00:00.000Z",
+      "namespacePrefix": "",
+      "type": "CustomObjectTranslation"
+    },
+    {
+      "createdById": "0058e000002FRe5AAG",
+      "createdByName": "OUTMAN OUHARRI",
+      "createdDate": "1970-01-01T00:00:00.000Z",
+      "fileName": "objectTranslations/QuestionType__mdt-fr.objectTranslation",
+      "fullName": "QuestionType__mdt-fr",
+      "id": "",
+      "lastModifiedById": "0058e000002FRe5AAG",
+      "lastModifiedByName": "OUTMAN OUHARRI",
+      "lastModifiedDate": "1970-01-01T00:00:00.000Z",
+      "namespacePrefix": "",
+      "type": "CustomObjectTranslation"
+    },
+    {
+      "createdById": "0058e000002FRe5AAG",
+      "createdByName": "OUTMAN OUHARRI",
+      "createdDate": "1970-01-01T00:00:00.000Z",
+      "fileName": "objectTranslations/Quize_Setting__mdt-fr.objectTranslation",
+      "fullName": "Quize_Setting__mdt-fr",
+      "id": "",
+      "lastModifiedById": "0058e000002FRe5AAG",
+      "lastModifiedByName": "OUTMAN OUHARRI",
+      "lastModifiedDate": "1970-01-01T00:00:00.000Z",
+      "namespacePrefix": "",
+      "type": "CustomObjectTranslation"
+    },
+    {
+      "createdById": "0058e000002FRe5AAG",
+      "createdByName": "OUTMAN OUHARRI",
+      "createdDate": "1970-01-01T00:00:00.000Z",
+      "fileName": "objectTranslations/Responce__c-fr.objectTranslation",
+      "fullName": "Responce__c-fr",
+      "id": "",
+      "lastModifiedById": "0058e000002FRe5AAG",
+      "lastModifiedByName": "OUTMAN OUHARRI",
+      "lastModifiedDate": "1970-01-01T00:00:00.000Z",
+      "namespacePrefix": "",
+      "type": "CustomObjectTranslation"
+    },
+    {
+      "createdById": "0058e000002FRe5AAG",
+      "createdByName": "OUTMAN OUHARRI",
+      "createdDate": "1970-01-01T00:00:00.000Z",
+      "fileName": "objectTranslations/Answer__c-fr.objectTranslation",
+      "fullName": "Answer__c-fr",
+      "id": "",
+      "lastModifiedById": "0058e000002FRe5AAG",
+      "lastModifiedByName": "OUTMAN OUHARRI",
+      "lastModifiedDate": "1970-01-01T00:00:00.000Z",
+      "namespacePrefix": "",
+      "type": "CustomObjectTranslation"
+    },
+    {
+      "createdById": "0058e000002FRe5AAG",
+      "createdByName": "OUTMAN OUHARRI",
+      "createdDate": "1970-01-01T00:00:00.000Z",
+      "fileName": "objectTranslations/Question__c-fr.objectTranslation",
+      "fullName": "Question__c-fr",
+      "id": "",
+      "lastModifiedById": "0058e000002FRe5AAG",
+      "lastModifiedByName": "OUTMAN OUHARRI",
+      "lastModifiedDate": "1970-01-01T00:00:00.000Z",
+      "namespacePrefix": "",
+      "type": "CustomObjectTranslation"
+    },
+    {
+      "createdById": "0058e000002FRe5AAG",
+      "createdByName": "OUTMAN OUHARRI",
+      "createdDate": "1970-01-01T00:00:00.000Z",
+      "fileName": "objectTranslations/Quiz__c-fr.objectTranslation",
+      "fullName": "Quiz__c-fr",
+      "id": "",
+      "lastModifiedById": "0058e000002FRe5AAG",
+      "lastModifiedByName": "OUTMAN OUHARRI",
+      "lastModifiedDate": "1970-01-01T00:00:00.000Z",
+      "namespacePrefix": "",
+      "type": "CustomObjectTranslation"
+    },
+    {
+      "createdById": "0058e000002FRe5AAG",
+      "createdByName": "OUTMAN OUHARRI",
+      "createdDate": "1970-01-01T00:00:00.000Z",
+      "fileName": "objectTranslations/Assessment__c-fr.objectTranslation",
+      "fullName": "Assessment__c-fr",
+      "id": "",
+      "lastModifiedById": "0058e000002FRe5AAG",
+      "lastModifiedByName": "OUTMAN OUHARRI",
+      "lastModifiedDate": "1970-01-01T00:00:00.000Z",
+      "namespacePrefix": "",
+      "type": "CustomObjectTranslation"
+    }
+  ]
+}

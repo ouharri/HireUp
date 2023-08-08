@@ -1,0 +1,17 @@
+{
+  "status": 0,
+  "result": [
+    {
+      "createdById": "0058e000002FRe5AAG",
+      "createdByName": "OUTMAN OUHARRI",
+      "createdDate": "2023-07-22T00:42:00.000Z",
+      "fileName": "siteDotComSites/QUIZE1.site",
+      "fullName": "QUIZE1",
+      "id": "0DM8e000000TOQ4GAO",
+      "lastModifiedById": "0058e000002FRe5AAG",
+      "lastModifiedByName": "OUTMAN OUHARRI",
+      "lastModifiedDate": "2023-07-26T13:44:56.000Z",
+      "type": "SiteDotCom"
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "status": 0,
+  "result": [
+    {
+      "createdById": "0058e000002FRe5AAG",
+      "createdByName": "OUTMAN OUHARRI",
+      "createdDate": "2023-08-03T12:49:14.000Z",
+      "fileName": "staticresources/mirrorcss.resource",
+      "fullName": "mirrorcss",
+      "id": "0818e000000FYA5AAO",
+      "lastModifiedById": "0058e000002FRe5AAG",
+      "lastModifiedByName": "OUTMAN OUHARRI",
+      "lastModifiedDate": "2023-08-03T12:55:35.000Z",
+      "manageableState": "unmanaged",
+      "type": "StaticResource"
+    },
+    {
+      "createdById": "0058e000002FRe5AAG",
+      "createdByName": "OUTMAN OUHARRI",
+      "createdDate": "2023-08-03T12:50:09.000Z",
+      "fileName": "staticresources/mirrorjs.resource",
+      "fullName": "mirrorjs",
+      "id": "0818e000000FYAAAA4",
+      "lastModifiedById": "0058e000002FRe5AAG",
+      "lastModifiedByName": "OUTMAN OUHARRI",
+      "lastModifiedDate": "2023-08-03T12:50:17.000Z",
+      "manageableState": "unmanaged",
+      "type": "StaticResource"
+    },
+    {
+      "createdById": "0058e000002FRe5AAG",
+      "createdByName": "OUTMAN OUHARRI",
+      "createdDate": "2023-08-03T10:12:54.000Z",
+      "fileName": "staticresources/monaco.resource",
+      "fullName": "monaco",
+      "id": "0818e000000FY9qAAG",
+      "lastModifiedById": "0058e000002FRe5AAG",
+      "lastModifiedByName": "OUTMAN OUHARRI",
+      "lastModifiedDate": "2023-08-03T12:34:05.000Z",
+      "manageableState": "unmanaged",
+      "type": "StaticResource"
+    },
+    {
+      "createdById": "0058e000002FRe5AAG",
+      "createdByName": "OUTMAN OUHARRI",
+      "createdDate": "2023-07-24T18:51:40.000Z",
+      "fileName": "staticresources/flowbitecss.resource",
+      "fullName": "flowbitecss",
+      "id": "0818e000000PMGoAAO",
+      "lastModifiedById": "0058e000002FRe5AAG",
+      "lastModifiedByName": "OUTMAN OUHARRI",
+      "lastModifiedDate": "2023-07-24T18:52:54.000Z",
+      "manageableState": "unmanaged",
+      "type": "StaticResource"
+    },
+    {
+      "createdById": "0058e000002FRe5AAG",
+      "createdByName": "OUTMAN OUHARRI",
+      "createdDate": "2023-08-02T19:21:01.000Z",
+      "fileName": "staticresources/axios.resource",
+      "fullName": "axios",
+      "id": "0818e000000FY9WAAW",
+      "lastModifiedById": "0058e000002FRe5AAG",
+      "lastModifiedByName": "OUTMAN OUHARRI",
+      "lastModifiedDate": "2023-08-02T19:21:01.000Z",
+      "manageableState": "unmanaged",
+      "type": "StaticResource"
+    },
+    {
+      "createdById": "0058e000002FRe5AAG",
+      "createdByName": "OUTMAN OUHARRI",
+      "createdDate": "2023-07-22T00:30:26.000Z",
+      "fileName": "staticresources/quizePatternImage.resource",
+      "fullName": "quizePatternImage",
+      "id": "0818e000000PLl7AAG",
+      "lastModifiedById": "0058e000002FRe5AAG",
+      "lastModifiedByName": "OUTMAN OUHARRI",
+      "lastModifiedDate": "2023-07-22T00:53:11.000Z",
+      "manageableState": "unmanaged",
+      "type": "StaticResource"
+    },
+    {
+      "createdById": "0058e000002FRe5AAG",
+      "createdByName": "OUTMAN OUHARRI",
+      "createdDate": "2023-07-22T00:21:08.000Z",
+      "fileName": "staticresources/quizeStartImage.resource",
+      "fullName": "quizeStartImage",
+      "id": "0818e000000PLl2AAG",
+      "lastModifiedById": "0058e000002FRe5AAG",
+      "lastModifiedByName": "OUTMAN OUHARRI",
+      "lastModifiedDate": "2023-07-22T00:53:22.000Z",
+      "manageableState": "unmanaged",
+      "type": "StaticResource"
+    },
+    {
+      "createdById": "0058e000002FRe5AAG",
+      "createdByName": "OUTMAN OUHARRI",
+      "createdDate": "2023-07-24T18:52:06.000Z",
+      "fileName": "staticresources/flowbitejs.resource",
+      "fullName": "flowbitejs",
+      "id": "0818e000000PMGtAAO",
+      "lastModifiedById": "0058e000002FRe5AAG",
+      "lastModifiedByName": "OUTMAN OUHARRI",
+      "lastModifiedDate": "2023-07-24T18:53:03.000Z",
+      "manageableState": "unmanaged",
+      "type": "StaticResource"
+    },
+    {
+      "createdById": "0058e000002FRe5AAG",
+      "createdByName": "OUTMAN OUHARRI",
+      "createdDate": "2023-07-22T00:39:41.000Z",
+      "fileName": "staticresources/SiteSamples.resource",
+      "fullName": "SiteSamples",
+      "id": "0818e000000PLlCAAW",
+      "lastModifiedById": "0058e000002FRe5AAG",
+      "lastModifiedByName": "OUTMAN OUHARRI",
+      "lastModifiedDate": "2023-07-22T00:39:41.000Z",
+      "manageableState": "unmanaged",
+      "type": "StaticResource"
+    }
+  ]
+}
