@@ -71,6 +71,62 @@
     background-color: #4aaaacda;
 }
 
+.fullScreenButtonClass {
+    position: fixed;
+    z-index: 100;
+    top: -25px;
+    right: 18px;
+}
+
+.fullScreenButton {
+    opacity: .6;
+}
+
+.fullScreenButton:hover {
+    opacity: 1;
+}
+
+.CodeMirror-simplescroll-horizontal div, .CodeMirror-simplescroll-vertical div {
+    position: absolute;
+    background: #4aaaac !important;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    border: 0px solid #4aaaac !important;
+    border-radius: 3px !important;
+    -webkit-border-radius: 3px !important;
+    -moz-border-radius: 3px !important;
+    -ms-border-radius: 3px !important;
+    -o-border-radius: 3px !important;
+}
+
+.CodeMirror-overlayscroll-horizontal div {
+    bottom: 0;
+    height: 100%;
+}
+
+.CodeMirror-overlayscroll-horizontal div, .CodeMirror-overlayscroll-vertical div {
+    position: absolute;
+    background: #4aaaac !important;
+    border-radius: 3px;
+}
+
+.CodeMirror-overlayscroll-vertical {
+    right: 0;
+    top: 0;
+    width: 1.5px !important;
+}
+
+.CodeMirror-overlayscroll-vertical div {
+    right: 0;
+    width: 100%;
+}
+
+.CodeMirror-overlayscroll-horizontal {
+    bottom: 0;
+    left: 0;
+    height: 2.5px !important;
+}
+
 /* media-queries */
 @media (max-width: 960px) {
     .button_Box button.submit_code_btn {

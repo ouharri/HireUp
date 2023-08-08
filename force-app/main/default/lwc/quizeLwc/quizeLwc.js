@@ -27,6 +27,8 @@ export default class QuizeLwc extends LightningElement {
     @track imageBgLink = '';
     @track isNotReadyStartQuiz = true;
 
+    @track appClass = 'app'
+
     TIME_LIMIT = 30;
     @track timePassed = 0;
     @track remainingPathColor = 'base-timer__path-remaining ' + COLOR_CODES.info.color;
@@ -75,6 +77,10 @@ export default class QuizeLwc extends LightningElement {
             this.validateToken(currentPageReference.state?.id);
         }
     }
+
+    @track timerFullScreenClass = 'timerClass';
+    @track isEditorFullScreen = false;
+
 
     token = null;
     timer = null;
@@ -497,6 +503,18 @@ export default class QuizeLwc extends LightningElement {
         await this.setIsNotClickedNextQuestion();
         await this.handleUserResponse(e.detail);
     }
+
+    handleFullScreenTimer(e) {
+        if (e.detail) {
+            this.timerFullScreenClass = this.isEditorFullScreen = (window.screen.width <= 526) ? 'timerFullScreenMobileClass' : 'timerFullScreenClass';
+            this.appClass = 'appFullScreen';
+        } else {
+            this.isEditorFullScreen = false;
+            this.timerFullScreenClass = 'timerClass';
+            this.appClass = 'app';
+        }
+    }
+
 
     clearTimer() {
         clearTimeout(this.timer);

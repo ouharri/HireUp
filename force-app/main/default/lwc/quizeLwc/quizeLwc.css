@@ -26,6 +26,27 @@
   box-sizing: border-box;
 }
 
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+*::-webkit-scrollbar-thumb {
+  display: none;
+  background-color: #4aaaac;
+  border-radius: 20px;
+  border: 2px solid #4aaaac;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  display: block;
+}
+
 .slds-template_default {
   padding: 0 !important;
   margin: 0 !important;
@@ -53,6 +74,13 @@
   align-content: center;
   flex-direction: column;
   flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+.appFullScreen {
+  height: 100vh !important;
+  max-height: 100vh !important;
+  padding-top: 5vw;
 }
 
 
@@ -147,6 +175,31 @@
 
 .problem-solving {
   width: 90vw;
+}
+
+
+.timerFullScreenClass {
+  position: fixed;
+  z-index: 100;
+  top: -32px;
+  right: calc(50vw);
+  display: flex;
+  opacity: 1;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0 auto;
+}
+
+.timerFullScreenMobileClass {
+  position: fixed;
+  z-index: 100;
+  top: -78px;
+  overflow-x: auto;
+  display: flex;
+  opacity: 1;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0 auto;
 }
 
 @keyframes slideInFromLeft {
@@ -282,8 +335,17 @@
 
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1280px) {
+  .editorContainer {
+    display: flex;
+  }
+
   .editor {
     width: 50%;
+  }
+
+  .question-contents {
+    padding: 20px 0 92px 0;
+    margin-bottom: 50px !important;
   }
 }

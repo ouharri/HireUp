@@ -14,12 +14,16 @@ const options = {
 };
 
 export default class CodeEditorComp extends LightningElement {
-    editorInitialized = false;
-    editor = null;
+    @track editorInitialized = false;
+    @track editor = null;
+    @track isFullScreenEditor = false;
+    @track fullScreenButton = 'fullScreenButton cursor-pointer';
 
     @api questionattribute = { codeInit: [{ Language__c: '', codeText__c: '' }], unitTests: [] };
-    @track language = 'a098e000002nrwXAAQ';
-    @track code = '';
+    @track language = {
+        value: 'a098e000002nrwXAAQ',
+        text: 'nodejs'
+    };
 
 
     async getLanguage() {
@@ -33,76 +37,90 @@ export default class CodeEditorComp extends LightningElement {
     }
 
     async runCode() {
-        const options_post = {
-            method: 'POST',
-            headers: {
-                'content-type': 'application/json',
-                'X-RapidAPI-Key': '50c8283de5msh9a363fa31f44eb7p1a0ad7jsn55c4b7c0c636',
-                'X-RapidAPI-Host': 'online-code-compiler.p.rapidapi.com'
-            },
-            body: JSON.stringify({
-                language: this.language,
-                version: 'latest',
-                code: this.editor.getValue(),
-                input: null
-            })
-        };
+        // const options_post = {
+        //     method: 'POST',
+        //     headers: {
+        //         'content-type': 'application/json',
+        //         'X-RapidAPI-Key': '50c8283de5msh9a363fa31f44eb7p1a0ad7jsn55c4b7c0c636',
+        //         'X-RapidAPI-Host': 'online-code-compiler.p.rapidapi.com'
+        //     },
+        //     body: JSON.stringify({
+        //         language: this.language.text,
+        //         version: 'latest',
+        //         code: this.editor.getValue(),
+        //         input: `6
+        //         1 2 3 4 10 11
+        //         `,
+        //     })
+        // };
 
-        try {
-            const response = await fetch('https://online-code-compiler.p.rapidapi.com/v1/', options_post);
-            const result = await response.text();
-            console.log(
-                JSON.parse(result).output
+        // try {
+        //     const response = await fetch('https://online-code-compiler.p.rapidapi.com/v1/', options_post);
+        //     const result = await response.text();
+        //     console.log(
+        //         JSON.parse(result).output
+        //     );
+        // } catch (error) {
+        //     console.error(error);
+        // }
+
+
+    }
+
+    async autoEditorFullScreen() {
+        await Promise.all([
+            this.editor.setOption("fullScreen", !this.isFullScreenEditor),
+            this.editor.refresh()
+        ]).then(() => {
+            this.dispatchEvent(
+                new CustomEvent('fullscreentimer', {
+                    detail: this.isFullScreenEditor
+                })
             );
-        } catch (error) {
-            console.error(error);
+        });
+        if (!this.isFullScreenEditor) {
+            this.fullScreenButton = 'fullScreenButtonClass cursor-pointer fullScreenButton';
+        } else {
+            this.fullScreenButton = 'cursor-pointer fullScreenButton';
         }
+        this.isFullScreenEditor = !this.isFullScreenEditor;
     }
 
     async setlanguagevalue(event) {
+        this.editorInitialized = false;
         await Promise.all([
-            this.language = event.target.value,
-            this.editorInitialized = false
-        ]).then(() => {
-            this.code = this.convertToPlain(
+            this.language = {
+                value: event.target.value,
+                text: event.target.options[event.target.selectedIndex].text
+            },
+            this.editor.setOption("mode", this.language.text === 'nodejs' ? 'javascript' : this.language.text),
+            this.editor.setValue(this.convertToPlain(
                 this.questionattribute.codeInit
-                    .filter((item) => item.Language__c === this.language)
+                    .filter((item) => item.Language__c === this.language.value)
                     .map((item) => item.codeText__c)[0]
-            );
+            )),
+            this.editor.refresh(),
+        ]).then(() => {
+            this.editorInitialized = true;
         });
-        await this.loadEditorResources().then(() => {
-            this.initEditor();
+    }
+
+    async resetEditorCode() {
+        this.editorInitialized = false;
+        await Promise.all([
+            this.editor.setValue(this.convertToPlain(
+                this.questionattribute.codeInit
+                    .filter((item) => item.Language__c === this.language.value)
+                    .map((item) => item.codeText__c)[0]
+            ))
+        ]).then(() => {
+            this.editorInitialized = true;
         });
     }
 
     initEditor() {
         if (!this.editorInitialized) {
             this.template.querySelector('[data-ref="editor"]').innerHTML = '';
-
-            CodeMirror.defineExtension("commentRange", function (isComment, from, to) {
-                var cm = this, curMode = CodeMirror.innerMode(cm.getMode(), cm.getTokenAt(from).state).mode;
-                cm.operation(function () {
-                    if (isComment) { // Comment range
-                        cm.replaceRange(curMode.commentEnd, to);
-                        cm.replaceRange(curMode.commentStart, from);
-                        if (from.line == to.line && from.ch == to.ch) // An empty comment inserted - put cursor inside
-                            cm.setCursor(from.line, from.ch + curMode.commentStart.length);
-                    } else { // Uncomment range
-                        var selText = cm.getRange(from, to);
-                        var startIndex = selText.indexOf(curMode.commentStart);
-                        var endIndex = selText.lastIndexOf(curMode.commentEnd);
-                        if (startIndex > -1 && endIndex > -1 && endIndex > startIndex) {
-                            // Take string till comment start
-                            selText = selText.substr(0, startIndex)
-                                // From comment start till comment end
-                                + selText.substring(startIndex + curMode.commentStart.length, endIndex)
-                                // From comment end till string end
-                                + selText.substr(endIndex + curMode.commentEnd.length);
-                        }
-                        cm.replaceRange(selText, from, to);
-                    }
-                });
-            });
             CodeMirror.defineExtension("autoIndentRange", function (from, to) {
                 var cmInstance = this;
                 this.operation(function () {
@@ -157,16 +175,24 @@ export default class CodeEditorComp extends LightningElement {
                 padding: 0,
                 value: this.convertToPlain(
                     this.questionattribute.codeInit
-                        .filter((item) => item.Language__c === this.language)
+                        .filter((item) => item.Language__c === this.language.value)
                         .map((item) => item.codeText__c)[0]
                 ),
                 autoCloseBrackets: true,
                 matchBrackets: true,
                 viewportMargin: 10,
-                mode: 'javascript',
-                commentRange: true,
+                mode: this.language.text === 'nodejs' ? 'javascript' : this.language.text,
                 autoIndentRange: true,
                 autoFormatRange: true,
+                matchTags: { bothTags: true },
+                showTrailingSpace: true,
+                styleActiveLine: true,
+                lineWrapping: true,
+                fullScreen: false,
+                autoCloseTags: true,
+                foldGutter: true,
+                gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+                scrollbarStyle: 'overlay',
                 extraKeys: { "Shift-Tab": this.autoFormatSelection }
             });
             this.editor.setSize("100%", "100%");
@@ -185,19 +211,6 @@ export default class CodeEditorComp extends LightningElement {
         this.editor.autoFormatRange(range.from, range.to);
     }
 
-    decodeHtmlEntities(text) {
-        const entityMap = {
-            '&amp;': '&',
-            '&lt;': '<',
-            '&gt;': '>',
-            '&quot;': '"',
-            '&#039;': "'",
-            // Add more entity mappings if needed
-        };
-        return text.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, function (match) {
-            return entityMap[match];
-        });
-    }
 
     convertToPlain(plainText) {
         plainText = plainText.replace(/<style([\s\S]*?)<\/style>/gi, '');
@@ -212,7 +225,7 @@ export default class CodeEditorComp extends LightningElement {
         plainText = plainText.replace(/<(?!\/?(div|li|ul|p))[^>]+>/ig, '');
         plainText = plainText.trim();
         plainText = plainText.replace(/\{/g, ' {\n  ');
-        plainText = plainText.replace(/\}/g, '\n\n}');
+        plainText = plainText.replace(/\}/g, '\n\n}\n\n');
         plainText = plainText.replace(/\(/g, ' (');
         plainText = plainText.replace(/\)/g, ')');
         plainText = plainText.replace(/\[/g, ' [');
@@ -221,19 +234,21 @@ export default class CodeEditorComp extends LightningElement {
         plainText = plainText.replace(/>/g, '>');
         plainText = plainText.replace(/,/g, ', ');
         plainText = plainText.replace(/:/g, ': ');
-        plainText = plainText.replace(/(^|\n)(\s*\/\*(.*?)\*\/)(\n|$)/g, '\n$2\n');
+        plainText = plainText.replace(/(^|\n)(\s*\/\*(.*?)\*\/)(\n|$)/g, '\n\n$2\n\n');
         plainText = plainText.replace(/(^|\n)(\s*\/\/[^\n]*)/g, '\n\n$2\n\n');
         plainText = plainText.replace(/\n\s*\n/g, '\n');
-        plainText = plainText.replace(/ \*\//g, ' */\n');
+        plainText = plainText.replace(/\n\s*\/\//g, '\n//');
+        plainText = plainText.replace(/\/\s*\n/g, '/\n');
+        plainText = plainText.replace(/ \*\//g, ' */\n\n');
         plainText = plainText.replace(/ \//g, '/');
         plainText = plainText.replace(/\/\/ /g, '//');
+        plainText = plainText.replace(/\}\s*/g, '}\n\n');
 
         const tempDivElement = document.createElement("div");
         tempDivElement.innerHTML = plainText;
 
-        return tempDivElement.innerText;;
+        return tempDivElement.innerText;
     }
-
 
     async loadEditorResources() {
         try {
@@ -243,6 +258,59 @@ export default class CodeEditorComp extends LightningElement {
                 loadStyle(this, codemirror + '/codemirror/lib/codemirror.css'),
             ]).then(async () => {
                 await Promise.all([
+                    loadScript(this, codemirror + '/codemirror/addon/display/fullscreen.js'),
+                    loadStyle(this, codemirror + '/codemirror/addon/display/fullscreen.css'),
+                    loadScript(this, codemirror + '/codemirror/addon/scroll/simplescrollbars.js'),
+                    loadStyle(this, codemirror + '/codemirror/addon/scroll/simplescrollbars.css'),
+                    loadScript(this, codemirror + '/codemirror/addon/comment/comment.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/comment/continuecomment.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/edit/closebrackets.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/edit/matchbrackets.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/edit/matchtags.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/edit/trailingspace.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/edit/closetag.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/edit/continuelist.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/edit/matchbrackets.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/edit/matchtags.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/fold/brace-fold.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/fold/comment-fold.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/fold/foldcode.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/fold/foldgutter.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/fold/indent-fold.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/fold/markdown-fold.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/fold/xml-fold.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/hint/show-hint.js'),
+                    loadStyle(this, codemirror + '/codemirror/addon/hint/show-hint.css'),
+                    loadScript(this, codemirror + '/codemirror/addon/hint/anyword-hint.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/hint/css-hint.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/hint/html-hint.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/hint/javascript-hint.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/hint/sql-hint.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/hint/xml-hint.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/lint/lint.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/lint/javascript-lint.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/lint/json-lint.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/lint/css-lint.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/lint/html-lint.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/lint/yaml-lint.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/mode/loadmode.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/mode/multiplex.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/runmode/runmode.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/runmode/colorize.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/search/search.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/search/searchcursor.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/dialog/dialog.js'),
+                    loadStyle(this, codemirror + '/codemirror/addon/dialog/dialog.css'),
+                    loadScript(this, codemirror + '/codemirror/addon/search/jump-to-line.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/search/match-highlighter.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/search/matchesonscrollbar.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/search/match-highlighter.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/search/matchesonscrollbar.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/search/match-highlighter.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/search/matchesonscrollbar.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/scroll/annotatescrollbar.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/scroll/scrollpastend.js'),
+                    loadScript(this, codemirror + '/codemirror/addon/scroll/simplescrollbars.js'),
                     loadScript(this, codemirror + '/codemirror/mode/javascript/javascript.js'),
                     loadScript(this, codemirror + '/codemirror/mode/php/php.js'),
                     loadScript(this, codemirror + '/codemirror/mode/xml/xml.js'),
@@ -296,7 +364,7 @@ export default class CodeEditorComp extends LightningElement {
                 ])
             });
             this.code = this.questionattribute.codeInit
-                .filter((item) => item.Language__c === this.language)
+                .filter((item) => item.Language__c === this.language.value)
                 .map((item) => item.codeText__c)[0];
             this.initEditor();
         } catch (error) {
@@ -304,21 +372,19 @@ export default class CodeEditorComp extends LightningElement {
         }
     }
 
-    renderedCallback() {
-        // this.language =
-        //     this.template.querySelector('[data-ref="languageSelect"]')
-        //         .target.value;
-        this.code = this.questionattribute.codeInit
-            .filter((item) => item.Language__c === this.language)
-            .map((item) => item.codeText__c)[0];
+    connectedCallback() {
         this.loadEditorResources();
+    }
 
-        console.log(
-            this.questionattribute.codeInit
-                .filter((item) => item.Language__c === this.language)
-                .map((item) => item.codeText__c)[0]
-        );
-        // this.getLanguage();
+    renderedCallback() {
+        let select = this.template.querySelector('[name="languageSelect"]');
+        if (select) {
+            this.language = {
+                value: select.options[select.selectedIndex].value,
+                text: select.options[select.selectedIndex].text
+            };
+            this.loadEditorResources();
+        }
     }
 
     disconnectedCallback() {
