@@ -112,7 +112,9 @@ export default class MultipleChoiceComp extends LightningElement {
             if (this.selectedOptions.length > 0) {
                 this.dispatchEvent(
                     new CustomEvent('nextquestion', {
-                        detail: this.selectedOptions
+                        detail: JSON.stringify(this.selectedOptions.map((c) => { return c.OptionId })) === JSON.stringify(this.answer.map((c) =>
+                            c.AnswerOption__c || c.AnswerText__c
+                        ))
                     })
                 )
                 this.selectedOptions = [];

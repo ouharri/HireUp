@@ -67,7 +67,9 @@ export default class SingleChoiceComp extends LightningElement {
         setTimeout(() => {
             this.dispatchEvent(
                 new CustomEvent('nextquestion', {
-                    detail: this.selectedOptions,
+                    detail: JSON.stringify(this.selectedOptions.map((c) => { return c.OptionId })) === JSON.stringify(this.answer.map((c) =>
+                        c.AnswerOption__c || c.AnswerText__c
+                    ))
                 })
             )
         }, 250)

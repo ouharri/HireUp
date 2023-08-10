@@ -16,16 +16,25 @@ public without sharing class QuizController {
                                                    FROM AnswerOption__c 
                                                    WHERE Question__c = :questionQuiz.Question__c];
             
-            List<Answer__c> correctAnswers = [SELECT AnswerOption__c, AnswerText__c
-                                              FROM Answer__c
-                                              WHERE Question__c = :questionQuiz.Question__c];
+            List<UnitTest__c> unitTests = [SELECT InputData__c, ExpectedOutput__c
+                                           FROM UnitTest__c
+                                           WHERE Question__c = :questionQuiz.Question__c];
 
-            questionWrappers.add(new QuestionWrapper(questionQuiz.Question__r, answerOptions, correctAnswers));
+            Question__c question = questionQuiz.Question__r;
+            
+            List<CodeInit__c> codeInit = [SELECT Id, Language__c, CodeText__c
+                                          FROM CodeInit__c
+                                          WHERE Question__c = :question.Id];
+            
+            List<Language__c> language = [SELECT Id, LanguageName__c
+                                          FROM Language__c
+                                          WHERE Id IN (SELECT Language__c FROM CodeInit__c WHERE Question__c = :question.Id)];
+
+            questionWrappers.add(new QuestionWrapper(question, answerOptions, unitTests, codeInit, language));
         }
 
         return new QuizWrapper(quiz, questionWrappers);
     }
-    
     
     @AuraEnabled(cacheable=true)
     public static List<Answer__c> getAnsswer(Id idQuestion){
@@ -47,12 +56,16 @@ public without sharing class QuizController {
     public class QuestionWrapper {
         @AuraEnabled public Question__c question;
         @AuraEnabled public List<AnswerOption__c> answerOptions;
-        @AuraEnabled public List<Answer__c> correctAnswers;
+        @AuraEnabled public List<UnitTest__c> unitTests;
+        @AuraEnabled public List<CodeInit__c> codeInit;
+        @AuraEnabled public List<Language__c> language;
 
-        public QuestionWrapper(Question__c question, List<AnswerOption__c> answerOptions, List<Answer__c> correctAnswers) {
+        public QuestionWrapper(Question__c question, List<AnswerOption__c> answerOptions, List<UnitTest__c> unitTests, List<CodeInit__c> codeInit, List<Language__c> language) {
             this.question = question;
             this.answerOptions = answerOptions;
-            this.correctAnswers = correctAnswers;
+            this.unitTests = unitTests;
+            this.codeInit = codeInit;
+            this.language = language;
         }
     }
 }

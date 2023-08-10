@@ -7,19 +7,22 @@ import getIdsFromToken from '@salesforce/apex/TokenManager.getIdsFromToken';
 import { loadStyle, loadScript } from 'lightning/platformResourceLoader';
 import getQuizzesWithQuestionsAndOptions from '@salesforce/apex/QuizController.getQuizzesWithQuestionsAndOptions';
 import quizePatternImage from '@salesforce/resourceUrl/quizePatternImage';
-
-const FULL_DASH_ARRAY = 283;
-const WARNING_THRESHOLD = 15;
-const ALERT_THRESHOLD = 10;
-
-const COLOR_CODES = {
-    info: { color: "green" },
-    warning: { color: "orange", threshold: WARNING_THRESHOLD },
-    alert: { color: "red", threshold: ALERT_THRESHOLD }
-};
+import sweet from '@salesforce/resourceUrl/sweet';
 
 export default class QuizeLwc extends LightningElement {
+    parentRef = this;
+
     // State variables
+    FULL_DASH_ARRAY = 283;
+    WARNING_THRESHOLD = 1 / 2;
+    ALERT_THRESHOLD = 1 / 4;
+
+    COLOR_CODES = {
+        info: { color: "green" },
+        warning: { color: "orange", threshold: this.WARNING_THRESHOLD },
+        alert: { color: "red", threshold: this.ALERT_THRESHOLD }
+    };
+
     @track isQuizStarted = false;
     @track currentQuestion = 1;
     @track countDown = 30;
@@ -31,13 +34,14 @@ export default class QuizeLwc extends LightningElement {
 
     TIME_LIMIT = 30;
     @track timePassed = 0;
-    @track remainingPathColor = 'base-timer__path-remaining ' + COLOR_CODES.info.color;
+    @track remainingPathColor = 'base-timer__path-remaining ' + this.COLOR_CODES.info.color;
     @track timeLeft = 30;
+    @track displayTime = '00:00';
     @track dashArray = '283';
 
-    get formattedTime() {
-        const minutes = Math.floor(this.timeLeft / 60);
-        let seconds = this.timeLeft % 60;
+    formattedTime(countDown) {
+        const minutes = Math.floor(countDown / 60);
+        let seconds = countDown % 60;
         if (seconds < 10) {
             seconds = `0${seconds}`;
         }
@@ -47,15 +51,15 @@ export default class QuizeLwc extends LightningElement {
     getDashArray() {
         const rawTimeFraction = this.timeLeft / this.TIME_LIMIT;
         const fraction = rawTimeFraction - (1 / this.TIME_LIMIT) * (1 - rawTimeFraction);
-        const circleDasharray = `${(fraction * FULL_DASH_ARRAY).toFixed(0)} 283`;
+        const circleDasharray = `${(fraction * this.FULL_DASH_ARRAY).toFixed(0)} 283`;
         return circleDasharray;
     }
 
-    setRemainingPathColor(timeLeft) {
-        const { alert, warning, info } = COLOR_CODES;
-        if (timeLeft <= 10) {
+    setRemainingPathColor(timeLeft, baseTime) {
+        const { alert, warning, info } = this.COLOR_CODES;
+        if (timeLeft <= Math.floor(baseTime * this.ALERT_THRESHOLD)) {
             this.remainingPathColor = 'base-timer__path-remaining ' + alert.color;
-        } else if (timeLeft <= 15) {
+        } else if (timeLeft <= Math.floor(baseTime * this.WARNING_THRESHOLD)) {
             this.remainingPathColor = 'base-timer__path-remaining ' + warning.color;
         }
     }
@@ -96,7 +100,6 @@ export default class QuizeLwc extends LightningElement {
     @track PUZZLE = false;
     @track SURVEY = false;
 
-
     QUESTION_TYPES = {
         MULTIPLE_CHOICE: 'multiple choice',
         SINGLE_CHOICE: 'single choice',
@@ -120,6 +123,7 @@ export default class QuizeLwc extends LightningElement {
             this.countDown = value;
             this.TIME_LIMIT = value;
             this.timeLeft = value;
+            this.displayTime = this.formattedTime(value);
             resolve();
         });
     };
@@ -127,10 +131,11 @@ export default class QuizeLwc extends LightningElement {
     setQuestions = (value) => {
         return new Promise((resolve) => {
             this.questions = value.map(question => {
-                return {
+                const modifiedQuestion = {
                     ...question,
                     statutClass: 'w-2 h-2 rounded text-white mx-1 text-center text-xs flex items-center justify-center bg-gray-200'
-                }
+                };
+                return modifiedQuestion;
             });
             resolve();
         });
@@ -317,7 +322,8 @@ export default class QuizeLwc extends LightningElement {
                 this.countDown--;
                 this.timePassed = this.timePassed += 1;
                 this.timeLeft = this.TIME_LIMIT - this.timePassed;
-                this.setRemainingPathColor(this.timeLeft);
+                this.displayTime = this.formattedTime(this.countDown);
+                this.setRemainingPathColor(this.timeLeft, this.TIME_LIMIT);
                 this.dashArray = this.getDashArray();
                 this.countDownTimer();
             }, 1000);
@@ -367,7 +373,7 @@ export default class QuizeLwc extends LightningElement {
         return new Promise((resolve) => {
             this.dashArray = '283';
             this.timePassed = 0;
-            this.remainingPathColor = 'base-timer__path-remaining ' + COLOR_CODES.info.color;
+            this.remainingPathColor = 'base-timer__path-remaining ' + this.COLOR_CODES.info.color;
             resolve();
         });
     }
@@ -488,14 +494,13 @@ export default class QuizeLwc extends LightningElement {
         await this.handleNextQuestion();
     }
 
-    async handleUserResponse(selectedAnswerOption = []) {
+    async handleUserResponse(selectedAnswerOption) {
         await this.setIsClickedNextQuestion();
         this.questions[this.currentQuestion - 1].statutClass =
-            JSON.stringify(selectedAnswerOption.map((c) => { return c.OptionId })) === JSON.stringify(this.questions[this.currentQuestion - 1].correctAnswers.map((c) =>
-                c.AnswerOption__c || c.AnswerText__c
-            )) ?
+            selectedAnswerOption ?
                 'w-2 h-2 rounded text-white mx-1 text-center text-xs flex items-center justify-center bg-green-500' :
                 'w-2 h-2 rounded text-white mx-1 text-center text-xs flex items-center justify-center bg-red-500';
+
         // call API to set user response in the database
     }
 
@@ -516,7 +521,6 @@ export default class QuizeLwc extends LightningElement {
         }
     }
 
-
     clearTimer() {
         clearTimeout(this.timer);
     }
@@ -525,6 +529,7 @@ export default class QuizeLwc extends LightningElement {
         Promise.all([
             loadStyle(this, flowbitecss),
             loadScript(this, flowbitejs),
+            loadScript(this, sweet),
         ])
         this.imageBgLink = `background-image: linear-gradient(
             to left top,

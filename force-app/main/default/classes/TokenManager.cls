@@ -1,22 +1,33 @@
 global without sharing class TokenManager {
     private static final String ENCRYPTION_KEY = '00D8e000000TGLFEA420230724144223';
 
-    global static String generateToken(Id leadId, Id quizId) {
-        if (quizId == null || leadId == null) {
-            return null;
+    @InvocableMethod(label='generateToken')
+    public static List<String> generateToken(List<LeadIdAndQuizIdWrapper> leadAndQuizIds) {
+        List<String> tokens = new List<String>();
+
+        if (leadAndQuizIds != null && !leadAndQuizIds.isEmpty()) {
+            LeadIdAndQuizIdWrapper wrapper = leadAndQuizIds[0];
+            Id leadId = wrapper.leadId;
+            Id quizId = wrapper.quizId;
+
+            if (quizId != null && leadId != null) {
+                String tokenData = leadId + '-' + quizId;
+
+                Blob sKeyBlob = Blob.valueOf(ENCRYPTION_KEY);
+
+                Blob cipherText = Crypto.encryptWithManagedIV('AES256', sKeyBlob, Blob.valueOf(tokenData));
+
+                String encodedCipherText = EncodingUtil.convertToHex(cipherText);
+                
+                String encodedId = EncodingUtil.urlEncode(encodedCipherText, 'UTF-8');
+                
+                tokens.add(encodedId);
+            }
         }
 
-        String tokenData = leadId + '-' + quizId;
-
-        Blob sKeyBlob = Blob.valueOf(ENCRYPTION_KEY);
-
-        Blob cipherText = Crypto.encryptWithManagedIV('AES256', sKeyBlob, Blob.valueOf(tokenData));
-
-        String encodedCipherText = EncodingUtil.convertToHex(cipherText);
-        String encodedId = EncodingUtil.urlEncode(encodedCipherText, 'UTF-8');
-
-        return encodedId;
+        return tokens;
     }
+
 
     @AuraEnabled(cacheable=true)
     global static Map<String, Id> getIdsFromToken(String encryptedToken) {
@@ -68,5 +79,13 @@ global without sharing class TokenManager {
         }
 
         return false;
+    }
+
+    public class LeadIdAndQuizIdWrapper {
+        @InvocableVariable(required=true)
+        public Id leadId;
+        
+        @InvocableVariable(required=true)
+        public Id quizId;
     }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class={appClass}>
+  <div class={appClass} data-ref="quizApp">
     <div
       if:true={isEditorFullScreen}
       style="
@@ -84,7 +84,7 @@
         </p>
         <div>
           <c-timer-comp
-            formattedtime={countDown}
+            formattedtime={displayTime}
             dasharray={dashArray}
             remainingpathcolor={remainingPathColor}
             class="timerClass"
@@ -158,7 +158,7 @@
         >
           <div class="flex-1">
             <c-timer-comp
-              formattedtime={countDown}
+              formattedtime={displayTime}
               dasharray={dashArray}
               remainingpathcolor={remainingPathColor}
               class={timerFullScreenClass}
@@ -173,20 +173,20 @@
               "
             >
               <p class="question">
-                { question.QuestionText__c }
+                <lightning-formatted-rich-text
+                  value={question.QuestionText__c}
+                  style="text-align: left;"
+                ></lightning-formatted-rich-text>
               </p>
             </div>
           </div>
 
           <c-code-editor-comp
+            parent-ref={parentRef}
             class="flex flex-col items-center gap-4 flex-1 editor"
             onfullscreentimer={handleFullScreenTimer}
             questionattribute={questionAttributes}
-            style="
-              margin: 0px 3%;
-              margin-top: 35px !important;
-              z-index: 2;
-            "
+            style="margin: 0px 3%; margin-top: 35px !important; z-index: 2;"
           >
           </c-code-editor-comp>
         </div>
@@ -253,5 +253,9 @@
         </div>
       </div>
     </div> -->
+    <div
+      data-ref="appModal"
+      style="width: 100vw; height: 100vh; position: absolute; top: 0; left: 0;"
+    ></div>
   </div>
 </template>

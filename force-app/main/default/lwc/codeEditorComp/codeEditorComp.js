@@ -25,6 +25,7 @@ export default class CodeEditorComp extends LightningElement {
         text: 'nodejs'
     };
 
+    @api parentRef;
 
     async getLanguage() {
         try {
@@ -37,34 +38,30 @@ export default class CodeEditorComp extends LightningElement {
     }
 
     async runCode() {
-        // const options_post = {
-        //     method: 'POST',
-        //     headers: {
-        //         'content-type': 'application/json',
-        //         'X-RapidAPI-Key': '50c8283de5msh9a363fa31f44eb7p1a0ad7jsn55c4b7c0c636',
-        //         'X-RapidAPI-Host': 'online-code-compiler.p.rapidapi.com'
-        //     },
-        //     body: JSON.stringify({
-        //         language: this.language.text,
-        //         version: 'latest',
-        //         code: this.editor.getValue(),
-        //         input: `6
-        //         1 2 3 4 10 11
-        //         `,
-        //     })
-        // };
+        const options_post = {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+                'X-RapidAPI-Key': '50c8283de5msh9a363fa31f44eb7p1a0ad7jsn55c4b7c0c636',
+                'X-RapidAPI-Host': 'online-code-compiler.p.rapidapi.com'
+            },
+            body: JSON.stringify({
+                language: this.language.text,
+                version: 'latest',
+                code: this.editor.getValue(),
+                input: this.convertToPlain(this.questionattribute.unitTests[0].inputData__c),
+            })
+        };
 
-        // try {
-        //     const response = await fetch('https://online-code-compiler.p.rapidapi.com/v1/', options_post);
-        //     const result = await response.text();
-        //     console.log(
-        //         JSON.parse(result).output
-        //     );
-        // } catch (error) {
-        //     console.error(error);
-        // }
-
-
+        try {
+            const response = await fetch('https://online-code-compiler.p.rapidapi.com/v1/', options_post);
+            const result = await response.text();
+            console.log(
+                JSON.parse(result).output
+            );
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     async autoEditorFullScreen() {
@@ -79,11 +76,9 @@ export default class CodeEditorComp extends LightningElement {
         await Promise.all([
             this.editor.setOption("fullScreen", this.isFullScreenEditor),
         ]).then(() => {
-            if (this.isFullScreenEditor) {
-                this.fullScreenButton = 'fullScreenButton cursor-pointer fullScreenButtonClass';
-            } else {
+            this.fullScreenButton = (this.isFullScreenEditor) ?
+                'fullScreenButton cursor-pointer fullScreenButtonClass' :
                 this.fullScreenButton = 'cursor-pointer fullScreenButton';
-            }
         });
     }
 
@@ -106,6 +101,23 @@ export default class CodeEditorComp extends LightningElement {
         });
     }
 
+    askForConfirmation() {
+        Swal.fire({
+            title: 'Attention: Reset Code',
+            text: "This will reset the code in the editor to the original problem statement. Would you like to continue ?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#4aaaac',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes',
+            target: this.parentRef.template.querySelector('[data-ref="appModal"]'),
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.resetEditorCode();
+            }
+        })
+    }
+
     async resetEditorCode() {
         this.editorInitialized = false;
         await Promise.all([
@@ -116,6 +128,7 @@ export default class CodeEditorComp extends LightningElement {
             ))
         ]).then(() => {
             this.editorInitialized = true;
+            this.isResetModalOpen = false;
         });
     }
 
@@ -169,7 +182,6 @@ export default class CodeEditorComp extends LightningElement {
                     cm.setSelection(from, cm.getCursor(false));
                 });
             });
-
             this.editor = CodeMirror(this.template.querySelector('[data-ref="editor"]'), {
                 lineNumbers: true,
                 tabSize: 2,
@@ -197,8 +209,8 @@ export default class CodeEditorComp extends LightningElement {
                 extraKeys: { "Shift-Tab": this.autoFormatSelection }
             });
             this.editor.setSize("100%", "100%");
-            const totalLines = this.editor.lineCount();
-            this.editor.autoFormatRange({ line: 0, ch: 0 }, { line: totalLines });
+            this.editor.autoFormatRange({ line: 0, ch: 0 }, { line: this.editor.lineCount() });
+            this.autoFormatSelection();
             this.editorInitialized = true;
         }
     }
@@ -382,14 +394,7 @@ export default class CodeEditorComp extends LightningElement {
     }
 
     renderedCallback() {
-        // let select = this.template.querySelector('[name="languageSelect"]');
-        // if (select) {
-        //     this.language = {
-        //         value: select.options[select.selectedIndex].value,
-        //         text: select.options[select.selectedIndex].text
-        //     };
-        //     this.loadEditorResources();
-        // }
+        console.log(this.parentRef);
     }
 
     disconnectedCallback() {

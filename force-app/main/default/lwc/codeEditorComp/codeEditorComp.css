@@ -127,9 +127,15 @@
     height: 2.5px !important;
 }
 
-.CodeMirror-fullscreen{
+.CodeMirror-fullscreen {
     z-index: 99 !important;
 }
+
+.swal2-container {
+    height: 100vh;
+    width: 100vw;
+}
+
 /* media-queries */
 @media (max-width: 960px) {
     .button_Box button.submit_code_btn {
