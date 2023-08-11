@@ -108,8 +108,13 @@ export default class MultipleChoiceComp extends LightningElement {
     async handleNextQuestion() {
         this.IsClickedNext = true;
         await this.handleEvent();
-        setTimeout(() => {
+        setTimeout(async () => {
             if (this.selectedOptions.length > 0) {
+                again:
+                if (!this.answer) {
+                    this.answer = await getAnsswer({ idQuestion: this.question });
+                    break again
+                };
                 this.dispatchEvent(
                     new CustomEvent('nextquestion', {
                         detail: JSON.stringify(this.selectedOptions.map((c) => { return c.OptionId })) === JSON.stringify(this.answer.map((c) =>

@@ -9,6 +9,20 @@ import getQuizzesWithQuestionsAndOptions from '@salesforce/apex/QuizController.g
 import quizePatternImage from '@salesforce/resourceUrl/quizePatternImage';
 import sweet from '@salesforce/resourceUrl/sweet';
 
+(function () {
+    var originalHashValue = window.location.hash;
+
+    var preventNavigation = function () {
+        window.setTimeout(function () {
+            window.location.hash = 'preventNavigation' + ~~(9999 * Math.random());
+            window.location.hash = originalHashValue;
+        }, 0);
+    };
+
+    window.addEventListener('beforeunload', preventNavigation, false);
+    window.addEventListener('unload', preventNavigation, false);
+})();
+
 export default class QuizeLwc extends LightningElement {
     parentRef = this;
 
@@ -329,6 +343,7 @@ export default class QuizeLwc extends LightningElement {
             }, 1000);
         } else if (this.countDown === 0) {
             this.setDefaultTimer();
+            swal.close();
             await new Promise((resolve) => {
                 switch (this.question.QuestionType__c) {
                     case this.QUESTION_TYPES.MULTIPLE_CHOICE:
@@ -423,25 +438,6 @@ export default class QuizeLwc extends LightningElement {
         });
     }
 
-    async openFullscreen() {
-        await (this.template.querySelector('.app').requestFullscreen() ||
-            this.template.querySelector('.app').webkitRequestFullscreen() ||
-            this.template.querySelector('.app').mozRequestFullScreen() ||
-            this.template.querySelector('.app').msRequestFullscreen());
-    }
-
-    closeFullscreen() {
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
-        } else if (document.mozCancelFullScreen) {
-            document.mozCancelFullScreen();
-        } else if (document.msExitFullscreen) {
-            document.msExitFullscreen();
-        }
-    }
-
     async handleQuizEnd() {
         clearTimeout(this.timer);
         await new Promise((resolve) => {
@@ -525,6 +521,73 @@ export default class QuizeLwc extends LightningElement {
         clearTimeout(this.timer);
     }
 
+
+    handleVisibilityChange = () => {
+        if (document.hidden) {
+            this.openFullscreen();
+        }
+    };
+
+    async openFullscreen() {
+        const appElement = this.template.querySelector('.app');
+        if (appElement) {
+            await (appElement.requestFullscreen() ||
+                appElement.webkitRequestFullscreen() ||
+                appElement.mozRequestFullScreen() ||
+                appElement.msRequestFullscreen());
+        }
+    }
+
+    handleFullscreenChange = async () => {
+        if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) {
+            await this.openFullscreen();
+        }
+    };
+
+    handleBeforeUnload = (event) => {
+        if (this.isQuizStarted) {
+            event.preventDefault();
+            event.returnValue = 'You are trying to leave.';
+            return false;
+        }
+    }
+
+    closeFullscreen() {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+    }
+
+    renderedCallback() {
+        const appElement = this.template.querySelector('.app');
+        if (appElement) {
+            appElement.addEventListener("fullscreenchange", this.handleFullscreenChange);
+            appElement.addEventListener("webkitfullscreenchange", this.handleFullscreenChange);
+            appElement.addEventListener("mozfullscreenchange", this.handleFullscreenChange);
+            appElement.addEventListener("MSFullscreenChange", this.handleFullscreenChange);
+            appElement.addEventListener("visibilitychange", this.handleVisibilityChange);
+        }
+    }
+
+    disconnectedCallback() {
+        const appElement = this.template.querySelector('.app');
+        if (appElement) {
+            appElement.removeEventListener("fullscreenchange", this.handleFullscreenChange);
+            appElement.removeEventListener("webkitfullscreenchange", this.handleFullscreenChange);
+            appElement.removeEventListener("mozfullscreenchange", this.handleFullscreenChange);
+            appElement.removeEventListener("MSFullscreenChange", this.handleFullscreenChange);
+            appElement.removeEventListener("visibilitychange", this.handleVisibilityChange);
+        }
+        window.removeEventListener('beforeunload', this.handleBeforeUnload);
+        window.removeEventListener('unload', this.handleBeforeUnload);
+    }
+
     connectedCallback() {
         Promise.all([
             loadStyle(this, flowbitecss),
@@ -540,5 +603,19 @@ export default class QuizeLwc extends LightningElement {
             await this.handleUserResponse(event.detail);
             await this.setIsNotClickedNextQuestion();
         });
+        window.addEventListener('beforeunload', this.handleBeforeUnload, false);
+        window.addEventListener('unload', this.handleBeforeUnload, false);
+        window.onunload = function () {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            })
+            return false;
+        };
     }
 }

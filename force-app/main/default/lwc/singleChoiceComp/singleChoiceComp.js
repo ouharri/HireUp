@@ -64,7 +64,12 @@ export default class SingleChoiceComp extends LightningElement {
             )
         );
         await this.handleEvent();
-        setTimeout(() => {
+        setTimeout(async () => {
+            again:
+            if (!this.answer) {
+                this.answer = await getAnsswer({ idQuestion: this.question });
+                break again
+            };
             this.dispatchEvent(
                 new CustomEvent('nextquestion', {
                     detail: JSON.stringify(this.selectedOptions.map((c) => { return c.OptionId })) === JSON.stringify(this.answer.map((c) =>

@@ -27,6 +27,14 @@ export default class CodeEditorComp extends LightningElement {
 
     @api parentRef;
 
+    @track isCodeRuned = false;
+    @track errorMessage = '';
+    @track output = {
+        success: false,
+        message: 'Wrong Answer',
+        pandding: false
+    };
+
     async getLanguage() {
         try {
             const response = await fetch(url + 'languages/', options);
@@ -38,6 +46,27 @@ export default class CodeEditorComp extends LightningElement {
     }
 
     async runCode() {
+        this.output.pandding = true;
+        const output = await this.UnitTest(
+            this.convertToPlain(
+                this.questionattribute.unitTests[0].inputData__c
+            ),
+            this.convertToPlain(
+                this.questionattribute.unitTests[0].expectedOutput__c
+            )
+        );
+        Promise.all([
+            this.isCodeRuned = true,
+            this.output = output,
+            this.errorMessage = Number(output.message) === NaN
+                ? output.message
+                : 'Wrong Answer',
+        ]).then(() => {
+            this.displayOutputDetails();
+        });
+    }
+
+    async UnitTest(input, output) {
         const options_post = {
             method: 'POST',
             headers: {
@@ -49,18 +78,113 @@ export default class CodeEditorComp extends LightningElement {
                 language: this.language.text,
                 version: 'latest',
                 code: this.editor.getValue(),
-                input: this.convertToPlain(this.questionattribute.unitTests[0].inputData__c),
+                input: input,
             })
         };
-
         try {
             const response = await fetch('https://online-code-compiler.p.rapidapi.com/v1/', options_post);
             const result = await response.text();
-            console.log(
-                JSON.parse(result).output
-            );
+            return {
+                message: Number(JSON.parse(result).output) === Number(output) ?
+                    JSON.parse(result).output :
+                    (
+                        Number(this.output.message) !== NaN
+                            ? Number(JSON.parse(result).output)
+                            : 'Wrong Answer'
+                    )
+                ,
+                success: Number(JSON.parse(result).output) === Number(output),
+                pandding: false
+            };
         } catch (error) {
             console.error(error);
+            return fail;
+        }
+    }
+
+    async submitCode() {
+        this.dispatchEvent(
+            new CustomEvent('nextquestion', {
+                detail: this.editor.getValue()
+            })
+        )
+    }
+
+    displayOutputDetails() {
+        let htmlUnitTest = `
+        <div style="display: flex; flex-direction: column; gap: 10px;height: 300px !important text-align: left;">
+            <div>
+                <p style=" color: #576871; margin: 0; margin-bottom: 5px; font-weight: normal; font-size: 14px; text-align: left;">
+                    Input (stdin)
+                </p>
+                <div class="bg-gray-100" style=" max-height: 120px; width: 100%; margin-bottom: 15px; text-align: justify; overflow-y: auto; padding: 17px; ">
+                    ${this.convertToPlain(this.questionattribute.unitTests[0].inputData__c)}
+                </div>
+            </div>
+        `
+        if (this.output.success || Number(this.output.message) !== NaN) {
+            htmlUnitTest += `
+            <div>
+                <p style=" color: #576871; margin: 0; margin-bottom: 5px; font-weight: normal; font-size: 14px; text-align: left; ">
+                    Your Output (stdout)
+                </p>
+                <div class="bg-gray-100" style=" height: 35px; max-height: 40px; width: 100%; margin-bottom: 15px; text-align: left; overflow-y: auto; display: flex; align-items: center; padding-left: 17px; ">
+                    <p>
+                        ${Number(this.output.message)}
+                    </p>
+                </div>
+            </div>
+        `}
+        htmlUnitTest += `
+            <div>
+                <p style=" color: #576871; margin: 0; margin-bottom: 5px; font-weight: normal; font-size: 14px; text-align: left; ">
+                    Expected Output
+                </p>
+                <div class="bg-gray-100" style=" height: 35px; max-height: 40px; width: 100%; margin-bottom: 15px; text-align: left; overflow-y: auto; display: flex; align-items: center; padding-left: 17px; ">
+                    <p>
+                        ${this.convertToPlain(this.questionattribute.unitTests[0].expectedOutput__c)}
+                    </p>
+                </div>
+            </div>
+        </div>
+        `
+        if (this.output.success) {
+            Swal.fire({
+                icon: 'success',
+                confirmButtonColor: '#4aaaac',
+                cancelButtonColor: '#4aaaac',
+                title: `
+                <span style="color: #1ba94c; font-size: 26px;">Congratulations!</span>
+                `,
+                html: htmlUnitTest,
+                footer: `
+                <p style="margin-top: 10px; color: #576871; font-size: 14px;text-align: center;">
+                    You have passed the sample test cases. Click the submit button to
+                    run your code against all the test cases.
+                </p>
+                `,
+                target: this.parentRef.template.querySelector('[data-ref="appModal"]'),
+            })
+        } else {
+            Swal.fire({
+                icon: 'error',
+                confirmButtonColor: '#4aaaac',
+                cancelButtonColor: '#4aaaac',
+                title: `
+                <span style="color: #ff0202; font-size: 26px;"Error!</span>
+                `,
+                html: htmlUnitTest,
+                footer: Number(this.output.message) === NaN ? `
+                    <pre style="margin-top: 10px; color: #576871; font-size: 14px;">
+                        ${this.output.message}
+                    </pre>
+                ` : `
+                    <p style="margin-top: 10px; color: #576871; font-size: 14px;text-align: center;">
+                        Your output does not match the expected output. Please try again.
+                    </p>
+                `,
+                target: this.parentRef.template.querySelector('[data-ref="appModal"]'),
+            })
         }
     }
 
@@ -224,7 +348,6 @@ export default class CodeEditorComp extends LightningElement {
         this.editor.autoFormatRange(range.from, range.to);
     }
 
-
     convertToPlain(plainText) {
         plainText = plainText.replace(/<style([\s\S]*?)<\/style>/gi, '');
         plainText = plainText.replace(/<script([\s\S]*?)<\/script>/gi, '');
@@ -383,6 +506,50 @@ export default class CodeEditorComp extends LightningElement {
         } catch (error) {
             console.error('Error while loading Editor resources:', error);
         }
+    }
+
+    convertHtmlToRtf(html) {
+        if (!(typeof html === "string" && html)) {
+            return null;
+        }
+
+        var tmpRichText, hasHyperlinks;
+        var richText = html;
+
+        richText = richText.replace(/<(?:hr)(?:\s+[^>]*)?\s*[\/]?>/ig, "{\\pard \\brdrb \\brdrs \\brdrw10 \\brsp20 \\par}\n{\\pard\\par}\n");
+        richText = richText.replace(/<(?:br)(?:\s+[^>]*)?\s*[\/]?>/ig, "{\\pard\\par}\n");
+
+        richText = richText.replace(/<(?:p|div|section|article)(?:\s+[^>]*)?\s*[\/]>/ig, "{\\pard\\par}\n");
+        richText = richText.replace(/<(?:[^>]+)\/>/g, "");
+
+        richText = richText.replace(
+            /<a(?:\s+[^>]*)?(?:\s+href=(["'])(?:javascript:void\(0?\);?|#|return false;?|void\(0?\);?|)\1)(?:\s+[^>]*)?>/ig,
+            "{{{\n");
+        tmpRichText = richText;
+        richText = richText.replace(
+            /<a(?:\s+[^>]*)?(?:\s+href=(["'])(.+)\1)(?:\s+[^>]*)?>/ig,
+            "{\\field{\\*\\fldinst{HYPERLINK\n \"$2\"\n}}{\\fldrslt{\\ul\\cf1\n");
+        hasHyperlinks = richText !== tmpRichText;
+        richText = richText.replace(/<a(?:\s+[^>]*)?>/ig, "{{{\n");
+        richText = richText.replace(/<\/a(?:\s+[^>]*)?>/ig, "\n}}}");
+
+        richText = richText.replace(/<(?:b|strong)(?:\s+[^>]*)?>/ig, "{\\b\n");
+        richText = richText.replace(/<(?:i|em)(?:\s+[^>]*)?>/ig, "{\\i\n");
+        richText = richText.replace(/<(?:u|ins)(?:\s+[^>]*)?>/ig, "{\\ul\n");
+        richText = richText.replace(/<(?:strike|del)(?:\s+[^>]*)?>/ig, "{\\strike\n");
+        richText = richText.replace(/<sup(?:\s+[^>]*)?>/ig, "{\\super\n");
+        richText = richText.replace(/<sub(?:\s+[^>]*)?>/ig, "{\\sub\n");
+        richText = richText.replace(/<(?:p|div|section|article)(?:\s+[^>]*)?>/ig, "{\\pard\n");
+
+        richText = richText.replace(/<\/(?:p|div|section|article)(?:\s+[^>]*)?>/ig, "\n\\par}\n");
+        richText = richText.replace(/<\/(?:b|strong|i|em|u|ins|strike|del|sup|sub)(?:\s+[^>]*)?>/ig, "\n}");
+
+        richText = richText.replace(/<(?:[^>]+)>/g, "");
+
+        richText =
+            "{\\rtf1\\ansi\n" + (hasHyperlinks ? "{\\colortbl\n;\n\\red0\\green0\\blue255;\n}\n" : "") + richText + "\n}";
+
+        return richText;
     }
 
     connectedCallback() {

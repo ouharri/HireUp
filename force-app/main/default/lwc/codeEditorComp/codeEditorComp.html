@@ -97,10 +97,45 @@
   </div>
   <div style="width: 100%;">
     <div class="flex w-full" style="width: 100%; gap: 3%; height: 48px;">
-      <div
-        class="bg-gray-100"
-        style="width: 65%; height: 100%; border-radius: 11px;"
-      >hello</div>
+      <div style="width: 65%; height: 100%; border-radius: 11px;">
+        <div
+          if:true={isCodeRuned}
+          style="width: 100%; height: 100%;"
+          onclick={displayOutputDetails}
+        >
+          <div
+            lwc:if={output.success}
+            class="bg-gray-100 w-full h-full flex-row output"
+            style="border-radius: 11px; overflow-y: auto; padding: 5px 15px;"
+          >
+            <span
+              style="color: #1ba94c; font-size: 26px;"
+              class="cursor-pointer"
+            >
+              Congratulations!
+            </span>
+            <p style="margin-top: 10px; color: #576871; font-size: 14px;">
+              You have passed the sample test cases. Click the submit button to
+              run your code against all the test cases.
+            </p>
+          </div>
+          <div
+            lwc:else
+            class="bg-gray-100 w-full h-full flex-row output"
+            style="border-radius: 11px; overflow-y: auto; padding: 5px 15px;"
+          >
+            <span
+              style="color: #ff0202; font-size: 26px;"
+              class="cursor-pointer"
+            >
+              Error!
+            </span>
+            <p style="margin-top: 10px; color: #576871; font-size: 14px;">
+              {errorMessage}
+            </p>
+          </div>
+        </div>
+      </div>
       <div
         class="flex items-center justify-between w-full h-full button_Box"
         style="height: 100%; gap: 3%; width: 47%;"
@@ -109,6 +144,7 @@
           type="button"
           class="text-gray-900 w-full bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
           style="height: 100%;"
+          disabled={output.pandding}
           onclick={runCode}
         >
           run code
@@ -116,6 +152,7 @@
         <button
           type="button"
           class="submit_code_btn rounded-lg px-5 py-2.5 mr-2 mb-2"
+          onclick={submitCode}
         >
           Submit
         </button>

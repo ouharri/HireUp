@@ -131,12 +131,53 @@
     z-index: 99 !important;
 }
 
+button:disabled {
+    opacity: .7;
+    cursor: not-allowed;
+}
+
 .swal2-container {
     height: 100vh;
     width: 100vw;
 }
 
-/* media-queries */
+.output {
+    overflow-y: auto;
+}
+
+.output::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+.output::-webkit-scrollbar-track {
+    background: transparent !important;
+}
+
+.output::-webkit-scrollbar-thumb {
+    display: none;
+    background-color: #4aaaac;
+    border-radius: 20px;
+    border: 2px solid #4aaaac;
+}
+
+.output::-webkit-scrollbar-thumb:hover {
+    display: block;
+}
+
+.swal2-html-container {
+    display: block;
+    height: 300px !important;
+}
+
+.swal2-actions {
+    margin-top: 0 !important;
+}
+
+.swal2-title {
+    padding: 0 !important;
+}
+
 @media (max-width: 960px) {
     .button_Box button.submit_code_btn {
         width: 80%;
