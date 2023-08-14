@@ -62,6 +62,11 @@ export default class QuizeLwc extends LightningElement {
         return `${minutes}:${seconds}`;
     }
 
+
+    windowObjectReference = null; // variable globale
+    PreviousUrl; /* une variable globale qui stockera l'URL
+                      courante de la fenêtre secondaire */
+
     getDashArray() {
         const rawTimeFraction = this.timeLeft / this.TIME_LIMIT;
         const fraction = rawTimeFraction - (1 / this.TIME_LIMIT) * (1 - rawTimeFraction);
@@ -458,8 +463,38 @@ export default class QuizeLwc extends LightningElement {
 
     startQuiz() {
         this.isQuizStarted = true;
+        // Open the quiz in a new browser window
+        let url = 'https://hire-up-dev-ed.develop.my.site.com/quize/?id=b945d2e52b263356c62213456129bac65c349352c6fdd0118173f7347f109edeae0d96e886cdcdf3364ef3331bb6e45748d045fdee8b8f877a83f4d4ea557e51#';
+        this.openRequestedSinglePopup(url);
+        // let features = 'height=1000,width=1500,resizable=0,location=0,status=0,toolbar=0,menubar=0,';
+        // window.open(url, 'quiz', features);
         this.countDownTimer();
         this.openFullscreen();
+    }
+
+    openRequestedSinglePopup(url) {
+        if (this.windowObjectReference == null || this.windowObjectReference.closed) {
+            this.windowObjectReference = window.open(
+                url,
+                "quiz",
+                "popup,fullscreen=1,resizable=0,location=0,status=0,toolbar=0,menubar=0",
+            );
+        } else if (this.PreviousUrl != url) {
+            this.windowObjectReference = window.open(
+                url,
+                "quiz",
+                "popup",
+            );
+            /* Si la ressource à charger est différente, on la charge dans
+            la fenêtre secondaire déjà ouverte puis on place la nouvelle
+            fenêtre au premier plan */
+            this.windowObjectReference.focus();
+        } else {
+            this.windowObjectReference.focus();
+        }
+        this.PreviousUrl = url;
+        /* On stocke l'URL courante afin de pouvoir la comparer dans 
+         le cas d'un autre appel à cette fonction. */
     }
 
 
@@ -521,6 +556,9 @@ export default class QuizeLwc extends LightningElement {
         clearTimeout(this.timer);
     }
 
+    quizFocus() {
+        self.focus();
+    }
 
     handleVisibilityChange = () => {
         if (document.hidden) {
@@ -529,13 +567,24 @@ export default class QuizeLwc extends LightningElement {
     };
 
     async openFullscreen() {
-        const appElement = this.template.querySelector('.app');
-        if (appElement) {
-            await (appElement.requestFullscreen() ||
-                appElement.webkitRequestFullscreen() ||
-                appElement.mozRequestFullScreen() ||
-                appElement.msRequestFullscreen());
+
+        let el = document.documentElement
+            , rfs = await (el.requestFullScreen
+                || el.webkitRequestFullScreen
+                || el.mozRequestFullScreen
+                || el.msRequestFullScreen
+            );
+        if (typeof rfs != "undefined" && rfs) {
+            rfs.call(el);
         }
+
+        // const appElement = this.template.querySelector('.app');
+        // if (appElement) {
+        //     await (appElement.requestFullscreen() ||
+        //         appElement.webkitRequestFullscreen() ||
+        //         appElement.mozRequestFullScreen() ||
+        //         appElement.msRequestFullscreen());
+        // }
     }
 
     handleFullscreenChange = async () => {

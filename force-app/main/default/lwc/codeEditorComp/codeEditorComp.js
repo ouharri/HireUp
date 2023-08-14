@@ -32,7 +32,8 @@ export default class CodeEditorComp extends LightningElement {
     @track output = {
         success: false,
         message: 'Wrong Answer',
-        pandding: false
+        pandding: false,
+        errorMessage: '',
     };
 
     async getLanguage() {
@@ -58,9 +59,6 @@ export default class CodeEditorComp extends LightningElement {
         Promise.all([
             this.isCodeRuned = true,
             this.output = output,
-            this.errorMessage = Number(output.message) === NaN
-                ? output.message
-                : 'Wrong Answer',
         ]).then(() => {
             this.displayOutputDetails();
         });
@@ -83,22 +81,36 @@ export default class CodeEditorComp extends LightningElement {
         };
         try {
             const response = await fetch('https://online-code-compiler.p.rapidapi.com/v1/', options_post);
-            const result = await response.text();
+            const result = JSON.parse(await response.text());
+
+            if (Number(result.output) === Number(output)) {
+                var error = '';
+            } else if (isNaN(+result.output)) {
+                var error = result.output;
+            } else {
+                var error = 'Wrong Answer';
+            }
+            console.log(result.output);
+            console.log(+result.output);
+            console.log(error);
             return {
-                message: Number(JSON.parse(result).output) === Number(output) ?
-                    JSON.parse(result).output :
-                    (
-                        Number(this.output.message) !== NaN
-                            ? Number(JSON.parse(result).output)
-                            : 'Wrong Answer'
-                    )
+                message: Number(result.output) === Number(output) ?
+                    result.output : error
                 ,
-                success: Number(JSON.parse(result).output) === Number(output),
-                pandding: false
+                success: Number(result.output) === Number(output),
+                pandding: false,
+                errorMessage: error,
+                error: false,
             };
         } catch (error) {
             console.error(error);
-            return fail;
+            return {
+                message: '',
+                success: false,
+                pandding: false,
+                errorMessage: '',
+                error: error,
+            };
         }
     }
 
@@ -122,19 +134,18 @@ export default class CodeEditorComp extends LightningElement {
                 </div>
             </div>
         `
-        if (this.output.success || Number(this.output.message) !== NaN) {
-            htmlUnitTest += `
-            <div>
-                <p style=" color: #576871; margin: 0; margin-bottom: 5px; font-weight: normal; font-size: 14px; text-align: left; ">
-                    Your Output (stdout)
+        htmlUnitTest += `
+        <div>
+            <p style=" color: #576871; margin: 0; margin-bottom: 5px; font-weight: normal; font-size: 14px; text-align: left; ">
+                Your Output (stdout)
+            </p>
+            <div class="bg-gray-100" style=" height: 35px; max-height: 40px; width: 100%; margin-bottom: 15px; text-align: left; overflow-y: auto; display: flex; align-items: center; padding-left: 17px; ">
+                <p>
+                    ${+this.output.message}
                 </p>
-                <div class="bg-gray-100" style=" height: 35px; max-height: 40px; width: 100%; margin-bottom: 15px; text-align: left; overflow-y: auto; display: flex; align-items: center; padding-left: 17px; ">
-                    <p>
-                        ${Number(this.output.message)}
-                    </p>
-                </div>
             </div>
-        `}
+        </div>
+        `
         htmlUnitTest += `
             <div>
                 <p style=" color: #576871; margin: 0; margin-bottom: 5px; font-weight: normal; font-size: 14px; text-align: left; ">
@@ -174,7 +185,7 @@ export default class CodeEditorComp extends LightningElement {
                 <span style="color: #ff0202; font-size: 26px;"Error!</span>
                 `,
                 html: htmlUnitTest,
-                footer: Number(this.output.message) === NaN ? `
+                footer: isNaN(+this.output.message) ? `
                     <pre style="margin-top: 10px; color: #576871; font-size: 14px;">
                         ${this.output.message}
                     </pre>
